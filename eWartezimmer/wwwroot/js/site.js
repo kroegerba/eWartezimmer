@@ -11,7 +11,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Set the initial value of the variable
-let countdownValue = 500;
+let countdownValue = 600;
 
 var circle = L.circle([51.934328,7.651021], {
     color: '#01c7b2',
@@ -26,13 +26,16 @@ function updateCountdown() {
   countdownValue--;
 
   // Display the countdown value
+  document.getElementById("countdown").innerHTML = "Sie haben noch " + ((Math.floor(countdownValue / 60) > 0)? Math.floor(countdownValue / 60) + " Minuten und " : "") + countdownValue % 60 + " Sekunden Zeit, bis Sie an der Reihe sind.";
+  
   circle.setRadius(countdownValue)
-  circle.radius--;
+
   // Check if the countdown has reached zero
   if (countdownValue <= 0) {
     clearInterval(interval); // Stop the countdown
+    document.getElementById("countdown").innerHTML = "Countdown finished!";
   }
 }
 
-  // Call the updateCountdown function every second
-  const interval = setInterval(updateCountdown, 1000);
+// Call the updateCountdown function every second
+const interval = setInterval(updateCountdown, 1000);
