@@ -16,3 +16,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+#map {
+  height: 768px;
+  width: 1024px;
+}
