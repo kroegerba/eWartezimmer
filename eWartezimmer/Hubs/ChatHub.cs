@@ -8,5 +8,12 @@ namespace eWartezimmer.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
+
+        public async Task SendMessageToConnectionId(string connectionId, string message)
+        {
+            await Clients.Client(connectionId).SendAsync("ReceiveMessage", connectionId, message);
+        }
+
+        
     }
 }
