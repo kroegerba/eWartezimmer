@@ -21,3 +21,14 @@ body {
   height: 768px;
   width: 1024px;
 }
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+}
+.inputContainer label, .inputContainer input {
+  margin-bottom: 10px;
+}
+.inputContainer input {
+  width: 200px; 
+}

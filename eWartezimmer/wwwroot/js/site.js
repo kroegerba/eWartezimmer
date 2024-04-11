@@ -37,5 +37,17 @@ function updateCountdown() {
   }
 }
 
+function showInput() {
+  var firstName = document.getElementById("firstName").value;
+  var lastName = document.getElementById("lastName").value;
+  var patientNumber = document.getElementById("patientNumber").value;
+
+  var outputText = "Vorname: " + firstName + "<br>" +
+  "Nachname: " + lastName + "<br>" +
+  "Patientennummer: " + patientNumber;
+
+document.getElementById("output").innerHTML = outputText;
+}
+
 // Call the updateCountdown function every second
 const interval = setInterval(updateCountdown, 1000);
