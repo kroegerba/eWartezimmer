@@ -32,3 +32,6 @@ body {
 .inputContainer input {
   width: 200px; 
 }
+#gender {
+  width: 200px;
+}
