@@ -37,5 +37,22 @@ function updateCountdown() {
   }
 }
 
+// Show the input after pressing the button on the page
+function showInput() {
+  var firstName = document.getElementById("firstName").value;
+  var lastName = document.getElementById("lastName").value;
+  var patientNumber = document.getElementById("patientNumber").value;
+  var complaint = document.getElementById("complaint").value;
+  var gender = document.getElementById("gender").value;
+
+  var outputText = "Vorname: " + firstName + "<br>" +
+  "Nachname: " + lastName + "<br>" +
+  "Patientennummer: " + patientNumber + "<br>" +
+  "Geschlecht: " + gender + "<br>" +
+  "Beschwerde: " + complaint;
+
+document.getElementById("output").innerHTML = outputText;
+}
+
 // Call the updateCountdown function every second
 const interval = setInterval(updateCountdown, 1000);
