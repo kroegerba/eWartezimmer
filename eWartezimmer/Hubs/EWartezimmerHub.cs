@@ -7,16 +7,12 @@ namespace eWartezimmer.Hubs
         private readonly QueueManager _queueManager = queueManager;
 
         public async Task SendMessage(string user, string message)
-        {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
-        }
+            => await Clients.All.SendAsync("ReceiveMessage", user, message);
 
         public async Task SendMessageToConnectionId(string connectionId, string message)
-        {
-            await Clients.Client(connectionId).SendAsync("ReceiveMessage", connectionId, message);
-        }
+            => await Clients.Client(connectionId).SendAsync("ReceiveMessage", connectionId, message);
 
-        public void RegisterAsNewQueuer(string name) 
+        public void RegisterAsNewQueuer(string name)
             => _queueManager.RegisterAsNewQueuer(connectionId: Context.ConnectionId, name: name);
 
         public override async Task OnDisconnectedAsync(Exception? exception)
@@ -24,6 +20,9 @@ namespace eWartezimmer.Hubs
             _queueManager.UnregisterQueuer(Context.ConnectionId);
             await Task.CompletedTask;
         }
+
+        public async Task TellMeAllQueuers() => 
+            await Clients.Caller.SendAsync("AllQueuers", _queueManager.JsonListAllQueuers());
 
 
     }
