@@ -5,21 +5,25 @@ namespace eWartezimmer
 {
     public class QueueManager
     {
-        private readonly ConcurrentDictionary<string, Patient> _queue = new();
+        private readonly List<Patient> _queue = new();
 
         internal string JsonListAllQueuers()
             => JsonSerializer.Serialize(_queue);
 
-        internal bool RegisterAsNewQueuer(string connectionId, string? name)
-            => !string.IsNullOrEmpty(name) 
-                && _queue.TryAdd(connectionId,
-                    new Patient(guid: Guid.NewGuid().ToString(), name: name, connectionId: connectionId)
-                    {
-                        Name = name,
-                        ConnectionId = connectionId
-                    });
+        internal void RegisterAsNewQueuer(string connectionId, string? name)
+        {
+            if (!string.IsNullOrEmpty(name)) {
+                _queue.Add(new Patient(guid: Guid.NewGuid().ToString(), name: name, connectionId: connectionId));
+            }
+        }
 
-        internal bool UnregisterQueuer(string connectionId)
-            => _queue.TryRemove(connectionId, out _);
+
+        internal void UnregisterQueuer(string connectionId)
+        {
+            var candidate = _queue.SingleOrDefault(p => p.ConnectionId != null && p.ConnectionId.Equals(connectionId));
+            if (candidate != null) {
+                _queue.Remove(candidate);
+            }
+        }
     }
 }
