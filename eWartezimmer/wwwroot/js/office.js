@@ -19,15 +19,37 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
     const container = document.getElementById("container");
 
     // Clear existing content in the container
-    container.innerHTML = "";
+    // container.innerHTML = "";
 
     patients.sort((a, b) => a.TurnInLine - b.TurnInLine);
 
     // Create and append div elements for each patient
     patients.forEach((patient) => {
-        const div = document.createElement("div");
-        div.textContent = `Name: ${patient.Name}, GUID: ${patient.Guid}, Connection ID: ${patient.ConnectionId}, TurnInLine: ${patient.TurnInLine}`; // Example properties
-        container.appendChild(div);
+        const element = document.getElementById(patient.Guid);
+        if (!element) {
+            // element with id does not exist yet, create it
+            console.log("Parent element has a child with ID 'childElementId'");
+            const div = document.createElement("div");
+            div.classList.add("patient");
+            div.id = patient.Guid;
+            div.textContent = `Name: ${patient.Name}, GUID: ${patient.Guid}, Connection ID: ${patient.ConnectionId}, TurnInLine: ${patient.TurnInLine}`; // Example properties
+            container.appendChild(div);
+        } else {
+            // element already existing, only update where changed
+        }
+
+        const existingPatientDivs = container.querySelectorAll(".patient");
+
+        // Remove patient divs from the container if their ID is not present in patients
+        existingPatientDivs.forEach((existingDiv) => {
+            if (!patients.some(patient => patient.Guid === existingDiv.id)) {
+                // ID of existing div is not present in patients array, remove it from the container
+                existingDiv.remove();
+            }
+        });
+
+
+
     });
 });
 
@@ -41,25 +63,3 @@ function updateCountdown() {
 
 // Call the updateCountdown function every second
 const interval = setInterval(updateCountdown, 1000);
-
-// Get the container and its child items
-var container = document.getElementById("container");
-var items = container.getElementsByClassName("item");
-
-// Convert items to an array for sorting
-var itemsArray = Array.prototype.slice.call(items);
-
-// Sort items based on the "data-order" attribute
-itemsArray.sort(function (a, b) {
-    var orderA = parseInt(a.getAttribute("data-order"));
-    var orderB = parseInt(b.getAttribute("data-order"));
-    return orderA - orderB;
-});
-
-// Empty the container
-container.innerHTML = "";
-
-// Append sorted items back to the container
-itemsArray.forEach(function (item) {
-    container.appendChild(item);
-});
