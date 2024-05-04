@@ -23,6 +23,12 @@ namespace eWartezimmer
 
         internal async Task UpdateTickAsync()
         {
+            _queue.ForEach(patient => {
+                patient.WaitingTime = patient.WaitingTime > 0 ? patient.WaitingTime - 1 : 0;
+                patient.TreatmentTimeElapsed = patient.WaitingTime == 0 && patient.TreatmentTimeElapsed <= patient.TreatmentDuration ?
+                    patient.TreatmentTimeElapsed + 1 :
+                    0;
+            });
             await _hubContext.Clients.All.SendAsync("AllQueuers", JsonListAllQueuers());
         }
 
@@ -33,9 +39,25 @@ namespace eWartezimmer
         {
             if (!string.IsNullOrEmpty(name))
             {
+
+                Patient? patientWithHighestTurnInLine = _queue.OrderByDescending(p => p.TurnInLine).FirstOrDefault();
+                var longestWait = (patientWithHighestTurnInLine != null) ? 
+                                    patientWithHighestTurnInLine.WaitingTime + patientWithHighestTurnInLine.TreatmentDuration : 
+                                        0;
+
                 _queue.Add(new Patient(guid: Guid.NewGuid().ToString(), name: name, connectionId: connectionId)
                 {
                     TurnInLine = TakeTurnInLineNumber(),
+                    WaitingTime = _queue.Count switch
+                    {
+                        0 => 0,
+                        1 => _queue.Single().TreatmentDuration - _queue.Single().TreatmentTimeElapsed,
+                        _ when _queue.Count >= 2 => longestWait,
+                        _ => 0
+                    }
+
+                    
+
                 });
             }
         }

@@ -13,8 +13,8 @@ namespace eWartezimmer
         public string Name { get; internal set; } = name;
         public string? ConnectionId { get; internal set; }
         public int TurnInLine { get; internal set; }
-        public int WaitingTime { get; internal set; } = int.MaxValue;
-        public int TreatmentDuration { get; internal set; } = int.MaxValue;
+        public int WaitingTime { get; internal set; }
+        public int TreatmentDuration { get; internal set; } = 300;
         public int TreatmentTimeElapsed { get; internal set; } = 0;
         
     }

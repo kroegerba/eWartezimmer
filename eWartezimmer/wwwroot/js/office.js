@@ -8,6 +8,13 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
+function formatTime(time) {
+    const minutes = ("" + (Math.floor(time / 60))).length = 1 ? "0" + Math.floor(time / 60) : Math.floor(time / 60);
+    const separator = ":";
+    const seconds = ("" + (time % 60)).length = 1 ? "0" + time % 60 : time % 60;
+    return minutes + separator + seconds;
+}
+
 connection.on("AllQueuers", (jsonListOfQueuers) => {
     // Parse the JSON list of patients
     const patients = JSON.parse(jsonListOfQueuers);
@@ -42,38 +49,59 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             div.appendChild(TurnInLineLabel);
 
             const NameInput = document.createElement("input");
+            NameInput.classList.add("nameInput");
             NameInput.setAttribute("type", "text");
             NameInput.setAttribute("name", "Name");
             NameInput.setAttribute("value", patient.Name);
             div.appendChild(NameInput);
-            div.appendChild(document.createElement("br"));
 
-            // patient.TreatmentDuration
+            // WaitingTime
+            const WaitingTimeLabel = document.createElement("label");
+            WaitingTimeLabel.textContent = "Wartezeit";
+            WaitingTimeLabel.classList.add("waitingTimeLabel");
+            div.appendChild(WaitingTimeLabel);
+
+            const WaitingTimeInput = document.createElement("input");
+            WaitingTimeInput.setAttribute("type", "text");
+            WaitingTimeInput.classList.add("waitingTimeInput");
+            WaitingTimeInput.setAttribute("name", "WaitingTime");
+            WaitingTimeInput.setAttribute("value", patient.WaitingTime);
+            WaitingTimeInput.setAttribute("readonly", true);
+            div.appendChild(WaitingTimeInput);
+
             // patient.TreatmentTimeElapsed
             const TreatmentTimeElapsedLabel = document.createElement("label");
-            TreatmentTimeElapsedLabel.textContent = "TreatmentTimeElapsed";
+            TreatmentTimeElapsedLabel.classList.add("treatmentTimeElapsedLabel");
+            TreatmentTimeElapsedLabel.textContent = "Behandlungszeit";
             div.appendChild(TreatmentTimeElapsedLabel);
 
             const TreatmentTimeElapsedInput = document.createElement("input");
             TreatmentTimeElapsedInput.setAttribute("type", "text");
+            TreatmentTimeElapsedInput.classList.add("treatmentTimeElapsedInput");
             TreatmentTimeElapsedInput.setAttribute("name", "TreatmentTimeElapsed");
             TreatmentTimeElapsedInput.setAttribute("value", patient.TreatmentTimeElapsed); // Set the value of the input to the attribute value
             TreatmentTimeElapsedInput.setAttribute("readonly", true);
             div.appendChild(TreatmentTimeElapsedInput);
 
-            div.appendChild(document.createElement("br"));
 
-            // WaitingTime
-            const WaitingTimeLabel = document.createElement("label");
-            WaitingTimeLabel.textContent = "WaitingTime";
-            div.appendChild(WaitingTimeLabel);
 
-            const WaitingTimeInput = document.createElement("input");
-            WaitingTimeInput.setAttribute("type", "text");
-            WaitingTimeInput.setAttribute("name", "WaitingTime");
-            WaitingTimeInput.setAttribute("value", patient.WaitingTime); // Set the value of the input to the attribute value
-            WaitingTimeInput.setAttribute("readonly", true);
-            div.appendChild(WaitingTimeInput);
+            // patient.TreatmentDuration
+            const TreatmentDurationLabel = document.createElement("label");
+            TreatmentDurationLabel.classList.add("treatmentDurationLabel");
+            TreatmentDurationLabel.textContent = "Behandlungsdauer";
+            div.appendChild(TreatmentDurationLabel);
+
+            const TreatmentDurationInput = document.createElement("input");
+            TreatmentDurationInput.setAttribute("type", "text");
+            TreatmentDurationInput.classList.add("treatmentDurationInput");
+            TreatmentDurationInput.setAttribute("name", "TreatmentDuration");
+            TreatmentDurationInput.setAttribute("value", patient.TreatmentDuration); // Set the value of the input to the attribute value
+            TreatmentDurationInput.setAttribute("readonly", true);
+            div.appendChild(TreatmentDurationInput);
+
+
+
+
 
             // add div to container
             container.appendChild(div);
@@ -87,6 +115,24 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                     element.classList.add("inTreatment");
                 }
             } else {
+                // If labelElement is not found, log an error or handle accordingly
+                console.log("Label element with class 'turnnumber' not found.");
+            }
+            var labelElement = element.querySelector(".waitingTimeInput");
+            if (labelElement) {
+                // If labelElement is found, update its textContent
+                labelElement.setAttribute("value", patient.WaitingTime);
+            }
+            else {
+                // If labelElement is not found, log an error or handle accordingly
+                console.log("Label element with class 'turnnumber' not found.");
+            }
+            var labelElement = element.querySelector(".treatmentTimeElapsedInput");
+            if (labelElement) {
+                // If labelElement is found, update its textContent
+                labelElement.setAttribute("value", patient.TreatmentTimeElapsed);
+            }
+            else {
                 // If labelElement is not found, log an error or handle accordingly
                 console.log("Label element with class 'turnnumber' not found.");
             }

@@ -2,6 +2,9 @@
     /* Your CSS styles for patient divs go here */
     background-color: #f0f0f0;
     border: 1px solid #ccc;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
     padding: 10px;
     margin-bottom: 10px;
     /* Add more styles as needed */
@@ -13,4 +16,42 @@
 
 .turnnumber {
     font-size: 28px;
+    margin: 8px;
 }
+
+.nameInput {
+    font-size: 28px;
+    margin: 8px
+}
+
+.treatmentTimeElapsedLabel {
+    font-size: 18px;
+    margin: 8px;
+}
+
+.waitingTimeLabel {
+    font-size: 18px;
+    margin: 8px;
+}
+
+.patient.inTreatment > .someOtherLabel {
+    display: none;
+}
+
+.inTreatment.patient > .waitingTimeLabel {
+    display: none;
+}
+
+.inTreatment.patient > .waitingTimeInput {
+    display: none;
+}
+
+:not(.inTreatment).patient > .treatmentTimeElapsedLabel {
+    display: none;
+}
+
+:not(.inTreatment).patient > .treatmentTimeElapsedInput {
+    display: none;
+}
+
+
