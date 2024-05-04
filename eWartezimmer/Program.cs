@@ -1,3 +1,4 @@
+using System.Net;
 using eWartezimmer;
 using eWartezimmer.Hubs;
 
@@ -30,5 +31,10 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<EWartezimmerHub>("/eWartezimmerHub");
+
+Console.WriteLine("Share this link: https://" + Dns.GetHostEntry(Dns.GetHostName())
+        .AddressList
+        .First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+        .ToString() + " with the correct port, whichever it is.");
 
 app.Run();
