@@ -32,7 +32,47 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             const div = document.createElement("div");
             div.classList.add("patient");
             div.id = patient.Guid;
-            div.textContent = `Name: ${patient.Name}, GUID: ${patient.Guid}, Connection ID: ${patient.ConnectionId}, TurnInLine: ${patient.TurnInLine}`; // Example properties
+
+            const TurnInLineLabel = document.createElement("label");
+            TurnInLineLabel.textContent = patient.TurnInLine;
+            TurnInLineLabel.classList.add("turnnumber");
+            div.appendChild(TurnInLineLabel);
+
+            const NameInput = document.createElement("input");
+            NameInput.setAttribute("type", "text");
+            NameInput.setAttribute("name", "Name");
+            NameInput.setAttribute("value", patient.Name);
+            div.appendChild(NameInput);
+            div.appendChild(document.createElement("br"));
+
+            // patient.TreatmentDuration
+            // patient.TreatmentTimeElapsed
+            const TreatmentTimeElapsedLabel = document.createElement("label");
+            TreatmentTimeElapsedLabel.textContent = "TreatmentTimeElapsed";
+            div.appendChild(TreatmentTimeElapsedLabel);
+
+            const TreatmentTimeElapsedInput = document.createElement("input");
+            TreatmentTimeElapsedInput.setAttribute("type", "text");
+            TreatmentTimeElapsedInput.setAttribute("name", "TreatmentTimeElapsed");
+            TreatmentTimeElapsedInput.setAttribute("value", patient.TreatmentTimeElapsed); // Set the value of the input to the attribute value
+            TreatmentTimeElapsedInput.setAttribute("readonly", true);
+            div.appendChild(TreatmentTimeElapsedInput);
+
+            div.appendChild(document.createElement("br"));
+
+            // WaitingTime
+            const WaitingTimeLabel = document.createElement("label");
+            WaitingTimeLabel.textContent = "WaitingTime";
+            div.appendChild(WaitingTimeLabel);
+
+            const WaitingTimeInput = document.createElement("input");
+            WaitingTimeInput.setAttribute("type", "text");
+            WaitingTimeInput.setAttribute("name", "WaitingTime");
+            WaitingTimeInput.setAttribute("value", patient.WaitingTime); // Set the value of the input to the attribute value
+            WaitingTimeInput.setAttribute("readonly", true);
+            div.appendChild(WaitingTimeInput);
+
+            // add div to container
             container.appendChild(div);
         } else {
             // element already existing, only update where changed

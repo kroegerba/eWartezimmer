@@ -1,0 +1,12 @@
+.patient {
+    /* Your CSS styles for patient divs go here */
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    /* Add more styles as needed */
+}
+
+.turnnumber {
+    font-size: 28px;
+}
