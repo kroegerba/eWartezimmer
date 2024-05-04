@@ -97,9 +97,9 @@ connection.on("queueUpdateReceived", function (jsonListOfQueuers) {
     console.log(jsonListOfQueuers);
 });
 
-function updateCountdown() {
-    connection.invoke("TellMeAllQueuers");
-}
+// function updateCountdown() {
+//     connection.invoke("TellMeAllQueuers");
+// }
 
 // Call the updateCountdown function every second
-const interval = setInterval(updateCountdown, 1000);
+// const interval = setInterval(updateCountdown, 1000);
