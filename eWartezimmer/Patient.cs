@@ -12,7 +12,7 @@ namespace eWartezimmer
         public string Guid { get; } = guid;
         public string Name { get; internal set; } = name;
         public string? ConnectionId { get; internal set; }
-        public int TurnInLine { get; internal set; } = int.MaxValue;
+        public int TurnInLine { get; internal set; }
         public int WaitingTime { get; internal set; } = int.MaxValue;
         public int TreatmentDuration { get; internal set; } = int.MaxValue;
         public int TreatmentTimeElapsed { get; internal set; } = 0;

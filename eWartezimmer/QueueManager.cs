@@ -13,10 +13,18 @@ namespace eWartezimmer
         internal void RegisterAsNewQueuer(string connectionId, string? name)
         {
             if (!string.IsNullOrEmpty(name)) {
-                _queue.Add(new Patient(guid: Guid.NewGuid().ToString(), name: name, connectionId: connectionId));
+                _queue.Add(new Patient(guid: Guid.NewGuid().ToString(), name: name, connectionId: connectionId)
+                {
+                    TurnInLine = TakeTurnInLineNumber(),
+                });
             }
         }
 
+        private int TakeTurnInLineNumber()
+        {
+            Patient? patientWithHighestTurnInLine = _queue.OrderByDescending(p => p.TurnInLine).FirstOrDefault();
+            return patientWithHighestTurnInLine != null ? patientWithHighestTurnInLine.TurnInLine + 1 : 1;
+        }
 
         internal void UnregisterQueuer(string connectionId)
         {

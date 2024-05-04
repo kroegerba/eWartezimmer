@@ -21,10 +21,12 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
     // Clear existing content in the container
     container.innerHTML = "";
 
+    patients.sort((a, b) => a.TurnInLine - b.TurnInLine);
+
     // Create and append div elements for each patient
     patients.forEach((patient) => {
         const div = document.createElement("div");
-        div.textContent = `Name: ${patient.Name}, GUID: ${patient.Guid}, Connection ID: ${patient.ConnectionId}`; // Example properties
+        div.textContent = `Name: ${patient.Name}, GUID: ${patient.Guid}, Connection ID: ${patient.ConnectionId}, TurnInLine: ${patient.TurnInLine}`; // Example properties
         container.appendChild(div);
     });
 });
