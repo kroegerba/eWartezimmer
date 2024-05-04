@@ -15,10 +15,15 @@ namespace eWartezimmer
         {
             _hubContext = hubContext;
             _timer = new Timer(
-                      async _ => await _hubContext.Clients.All.SendAsync("AllQueuers", JsonListAllQueuers()),
+                      async _ => await UpdateTickAsync(),
                       null,
                       TimeSpan.Zero,
                       TimeSpan.FromMilliseconds(1000));
+        }
+
+        internal async Task UpdateTickAsync()
+        {
+            await _hubContext.Clients.All.SendAsync("AllQueuers", JsonListAllQueuers());
         }
 
         internal string JsonListAllQueuers()
@@ -38,7 +43,7 @@ namespace eWartezimmer
         private int TakeTurnInLineNumber()
         {
             Patient? patientWithHighestTurnInLine = _queue.OrderByDescending(p => p.TurnInLine).FirstOrDefault();
-            return patientWithHighestTurnInLine != null ? patientWithHighestTurnInLine.TurnInLine + 1 : 1;
+            return patientWithHighestTurnInLine != null ? patientWithHighestTurnInLine.TurnInLine + 1 : 0;
         }
 
         internal void UnregisterQueuer(string connectionId)
@@ -47,6 +52,14 @@ namespace eWartezimmer
             if (candidate != null)
             {
                 _queue.Remove(candidate);
+                // Decrease the turn in line for each patient after the departed patient
+                foreach (var patient in _queue)
+                {
+                    if (patient.TurnInLine > candidate.TurnInLine)
+                    {
+                        patient.TurnInLine--;
+                    }
+                }
             }
         }
     }

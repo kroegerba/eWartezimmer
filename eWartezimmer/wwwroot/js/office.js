@@ -31,6 +31,9 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             console.log("Parent element has a child with ID 'childElementId'");
             const div = document.createElement("div");
             div.classList.add("patient");
+            if (patient.TurnInLine === 0) {
+                div.classList.add("inTreatment");
+            }
             div.id = patient.Guid;
 
             const TurnInLineLabel = document.createElement("label");
@@ -76,6 +79,17 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             container.appendChild(div);
         } else {
             // element already existing, only update where changed
+            var labelElement = element.querySelector(".turnnumber");
+            if (labelElement) {
+                // If labelElement is found, update its textContent
+                labelElement.textContent = patient.TurnInLine;
+                if (patient.TurnInLine === 0) {
+                    element.classList.add("inTreatment");
+                }
+            } else {
+                // If labelElement is not found, log an error or handle accordingly
+                console.log("Label element with class 'turnnumber' not found.");
+            }
         }
 
         const existingPatientDivs = container.querySelectorAll(".patient");
@@ -96,10 +110,3 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
 connection.on("queueUpdateReceived", function (jsonListOfQueuers) {
     console.log(jsonListOfQueuers);
 });
-
-// function updateCountdown() {
-//     connection.invoke("TellMeAllQueuers");
-// }
-
-// Call the updateCountdown function every second
-// const interval = setInterval(updateCountdown, 1000);
