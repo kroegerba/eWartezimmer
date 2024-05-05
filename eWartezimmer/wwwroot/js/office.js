@@ -8,11 +8,20 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
-function formatTime(time) {
-    const minutes = ("" + (Math.floor(time / 60))).length = 1 ? "0" + Math.floor(time / 60) : Math.floor(time / 60);
-    const separator = ":";
-    const seconds = ("" + (time % 60)).length = 1 ? "0" + time % 60 : time % 60;
-    return minutes + separator + seconds;
+function formatTime(seconds) {
+    // Calculate hours, minutes, and remaining seconds
+    var hours = Math.floor(seconds / 3600);
+    var remainingSeconds = seconds % 3600;
+    var minutes = Math.floor(remainingSeconds / 60);
+    var remainingSeconds = remainingSeconds % 60;
+
+    // Pad hours, minutes, and seconds with leading zeros if necessary
+    var formattedHours = hours.toString().padStart(2, '0');
+    var formattedMinutes = minutes.toString().padStart(2, '0');
+    var formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+
+    // Concatenate hours, minutes, and seconds with ":" separator
+    return formattedHours + ":" + formattedMinutes + ":" + formattedSeconds;
 }
 
 connection.on("AllQueuers", (jsonListOfQueuers) => {
@@ -79,7 +88,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             TreatmentTimeElapsedInput.setAttribute("type", "text");
             TreatmentTimeElapsedInput.classList.add("treatmentTimeElapsedInput");
             TreatmentTimeElapsedInput.setAttribute("name", "TreatmentTimeElapsed");
-            TreatmentTimeElapsedInput.setAttribute("value", patient.TreatmentTimeElapsed); // Set the value of the input to the attribute value
+            TreatmentTimeElapsedInput.setAttribute("value", formatTime(patient.TreatmentTimeElapsed));
             TreatmentTimeElapsedInput.setAttribute("readonly", true);
             div.appendChild(TreatmentTimeElapsedInput);
 
@@ -95,7 +104,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             TreatmentDurationInput.setAttribute("type", "text");
             TreatmentDurationInput.classList.add("treatmentDurationInput");
             TreatmentDurationInput.setAttribute("name", "TreatmentDuration");
-            TreatmentDurationInput.setAttribute("value", patient.TreatmentDuration); // Set the value of the input to the attribute value
+            TreatmentDurationInput.setAttribute("value", formatTime(patient.TreatmentDuration));
             TreatmentDurationInput.setAttribute("readonly", true);
             div.appendChild(TreatmentDurationInput);
 
@@ -121,7 +130,9 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             var labelElement = element.querySelector(".waitingTimeInput");
             if (labelElement) {
                 // If labelElement is found, update its textContent
-                labelElement.setAttribute("value", patient.WaitingTime);
+                //var wt = Math.floor(countdownValue / 60).toString().padStart(2, '0') + ":" + (patient.WaitingTime % 60).toString().padStart(2, '0');
+                // console.log(wt);
+                labelElement.setAttribute("value", formatTime(patient.WaitingTime));
             }
             else {
                 // If labelElement is not found, log an error or handle accordingly
@@ -130,7 +141,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             var labelElement = element.querySelector(".treatmentTimeElapsedInput");
             if (labelElement) {
                 // If labelElement is found, update its textContent
-                labelElement.setAttribute("value", patient.TreatmentTimeElapsed);
+                labelElement.setAttribute("value", formatTime(patient.TreatmentTimeElapsed));
             }
             else {
                 // If labelElement is not found, log an error or handle accordingly
