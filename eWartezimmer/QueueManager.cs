@@ -80,7 +80,7 @@ namespace eWartezimmer
                     if (patient.TurnInLine > candidate.TurnInLine)
                     {
                         patient.TurnInLine--;
-                        patient.WaitingTime -= candidate.TreatmentDuration;
+                        patient.WaitingTime -= candidate.TreatmentDuration - candidate.TreatmentTimeElapsed;
                     }
                 }
             }
