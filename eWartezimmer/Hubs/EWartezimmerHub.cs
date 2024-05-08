@@ -17,7 +17,7 @@ namespace eWartezimmer.Hubs
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            _queueManager.UnregisterQueuer(Context.ConnectionId);
+            // _queueManager.UnregisterQueuer(Context.ConnectionId);
             await Task.CompletedTask;
         }
 

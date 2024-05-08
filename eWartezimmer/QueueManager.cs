@@ -23,13 +23,21 @@ namespace eWartezimmer
 
         internal async Task UpdateTickAsync()
         {
+            var finishedPatient = (Patient?) null;
             _queue.ForEach(patient =>
             {
                 patient.WaitingTime = patient.WaitingTime > 0 ? patient.WaitingTime - 1 : 0;
                 patient.TreatmentTimeElapsed = patient.WaitingTime == 0 && patient.TreatmentTimeElapsed <= patient.TreatmentDuration ?
                     patient.TreatmentTimeElapsed + 1 :
                     0;
+                if (patient.TreatmentTimeElapsed == patient.TreatmentDuration) {
+                    finishedPatient = patient;
+                }
             });
+            if (finishedPatient != null) {
+                RemoveQueuer(finishedPatient);
+            }
+            
             await _hubContext.Clients.All.SendAsync("AllQueuers", JsonListAllQueuers());
         }
 
@@ -72,9 +80,27 @@ namespace eWartezimmer
             return patientWithHighestTurnInLine != null ? patientWithHighestTurnInLine.TurnInLine + 1 : 0;
         }
 
-        internal void UnregisterQueuer(string connectionId)
+        /* internal void UnregisterQueuer(string connectionId)
         {
             var candidate = _queue.SingleOrDefault(p => p.ConnectionId != null && p.ConnectionId.Equals(connectionId));
+            if (candidate != null)
+            {
+                _queue.Remove(candidate);
+                // Decrease the turn in line for each patient after the departed patient
+                foreach (var patient in _queue)
+                {
+                    if (patient.TurnInLine > candidate.TurnInLine)
+                    {
+                        patient.TurnInLine--;
+                        patient.WaitingTime -= candidate.TreatmentDuration - candidate.TreatmentTimeElapsed;
+                    }
+                }
+            }
+        } */
+
+        internal void RemoveQueuer(Patient queuer)
+        {
+            var candidate = _queue.SingleOrDefault(patient => patient.Guid.Equals(queuer.Guid));
             if (candidate != null)
             {
                 _queue.Remove(candidate);
