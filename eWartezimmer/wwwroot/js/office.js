@@ -57,6 +57,15 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             TurnInLineLabel.classList.add("turnnumber");
             div.appendChild(TurnInLineLabel);
 
+            const QrCodeButton = document.createElement("button");
+            QrCodeButton.classList.add("btn");
+            QrCodeButton.classList.add("btn-primary");
+            QrCodeButton.innerHTML = "<i class='fa-solid fa-qrcode'></i>";
+            QrCodeButton.addEventListener("click", function() {
+                window.open("/Home/Patient/" + patient.Guid);
+            });
+            div.appendChild(QrCodeButton);
+
             const NameInput = document.createElement("input");
             NameInput.classList.add("nameInput");
             NameInput.setAttribute("type", "text");
