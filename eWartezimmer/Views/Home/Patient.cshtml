@@ -1,6 +1,8 @@
+@model PatientViewModel
 @{
-    ViewData["Title"] = "Customer";
+    ViewData["Title"] = "Patient";
 }
+<input type="hidden" id="guid" value="@Model?.Patient?.Guid" />
 <div id="map"></div>
 <div id="countdown"></div>
 <div class="container">
@@ -30,4 +32,4 @@
 </div>
 <script src="~/lib/leaflet/leaflet.js" asp-append-version="true"></script>
 <script src="~/js/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
-<script src="~/js/customer.js" asp-append-version="true"></script>
+<script src="~/js/patient.js" asp-append-version="true"></script>

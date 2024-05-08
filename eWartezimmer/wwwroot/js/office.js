@@ -167,3 +167,11 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
 connection.on("queueUpdateReceived", function (jsonListOfQueuers) {
     console.log(jsonListOfQueuers);
 });
+
+document.getElementById("sendButton").addEventListener("click", function (event) {
+    console.log("send button pressed");
+    connection.invoke("CreatePatient").catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+  });

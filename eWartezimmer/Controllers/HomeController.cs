@@ -7,10 +7,12 @@ namespace eWartezimmer.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly QueueManager _queueManager;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, QueueManager queueManager)
     {
         _logger = logger;
+        _queueManager = queueManager;
     }
 
     public IActionResult Index()
@@ -18,9 +20,21 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Customer()
+    //public IActionResult Customer()
+    //{
+    //    return View();
+    //}
+
+    // {id?}
+    public IActionResult Patient(string? id)
     {
-        return View();
+        if (id != null) {
+            return View(model: new PatientViewModel { Patient = _queueManager.GetPatientByGuid(id) });
+        } else {
+            return View();
+
+        }
+        
     }
     public IActionResult Practice()
     {
