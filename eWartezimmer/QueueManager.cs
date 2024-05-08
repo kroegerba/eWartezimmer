@@ -10,8 +10,9 @@ namespace eWartezimmer
         private readonly Timer _timer;
         private readonly IHubContext<EWartezimmerHub> _hubContext;
         private readonly List<Patient> _queue = new();
+        internal string BaseUrl { get; set; }
 
-        public QueueManager(IHubContext<EWartezimmerHub> hubContext)
+        public QueueManager(IHubContext<EWartezimmerHub> hubContext, string baseUrl)
         {
             _hubContext = hubContext;
             _timer = new Timer(
@@ -19,6 +20,7 @@ namespace eWartezimmer
                       null,
                       TimeSpan.Zero,
                       TimeSpan.FromMilliseconds(1000));
+            BaseUrl = baseUrl;
         }
 
         internal async Task UpdateTickAsync()

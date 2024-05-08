@@ -16,49 +16,25 @@ public class HomeController : Controller
     }
 
     public IActionResult Index()
-    {
-        return View();
-    }
+        => View();
 
-    //public IActionResult Customer()
-    //{
-    //    return View();
-    //}
+    public IActionResult QrCode(string? id)
+        => View(model: new QrCodeViewModel { BaseUrl = _queueManager.BaseUrl, Patient = _queueManager.GetPatientByGuid(id) });
 
-    // {id?}
     public IActionResult Patient(string? id)
-    {
-        if (id != null) {
-            return View(model: new PatientViewModel { Patient = _queueManager.GetPatientByGuid(id) });
-        } else {
-            return View();
-
-        }
-        
-    }
-    public IActionResult Practice()
-    {
-        return View();
-    }
+        => View(model: new PatientViewModel { Patient = _queueManager.GetPatientByGuid(id) });
 
     public IActionResult Office()
-    {
-        return View();
-    }
+        => View();
 
     public IActionResult Privacy()
-    {
-        return View();
-    }
+        => View();
 
     public IActionResult Reception()
-    {
-        return View();
-    }
+        => View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
+        => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
 }

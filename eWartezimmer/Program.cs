@@ -1,13 +1,75 @@
 using System.Net;
+using System.Net.NetworkInformation;
 using eWartezimmer;
 using eWartezimmer.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSignalR();  
-builder.Services.AddSingleton<QueueManager>();
+builder.Services.AddSignalR();
+
+Dictionary<char, string?> addressBaseUrls = Enumerable.Range('A', 26)
+                                            .Select(Convert.ToChar)
+                                            .ToDictionary(c => c, _ => (string?)null);
+
+// Get all network interfaces
+NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+foreach (NetworkInterface networkInterface in networkInterfaces)
+{
+    // Filter out loopback and other non-usable interfaces
+    if (networkInterface.OperationalStatus == OperationalStatus.Up &&
+        networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+        networkInterface.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+    {
+        // Get IP properties for the current interface
+        IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
+
+        // Get IPv4 addresses for the current interface
+        IPAddress[] ipv4Addresses = ipProperties.UnicastAddresses
+            .Where(addr => addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+            .Select(addr => addr.Address)
+            .ToArray();
+
+        // Assign IPv4 addresses to choices for list from A - Z
+        foreach (IPAddress address in ipv4Addresses)
+        {
+            addressBaseUrls[addressBaseUrls.FirstOrDefault(kv => kv.Value == null).Key] = address.ToString();
+        }
+    }
+}
+
+var addressBaseUrl = string.Empty;
+if (addressBaseUrls.Values.Count(s => s != null) != 1)
+{
+    foreach (var url in addressBaseUrls.Where(kv => kv.Value != null))
+    {
+        Console.WriteLine(url.Key + " : " + url.Value);
+    }
+    Console.WriteLine("Wählen Sie eine Base Url: ");
+    var inputLine = Console.ReadLine();
+    var candidate = addressBaseUrls.Where(kv => kv.Key.ToString().Equals(inputLine));
+    if (candidate.Count() == 1)
+    {
+        addressBaseUrl = candidate.Single().Value;
+    } else {
+        Console.WriteLine("never mind, picking default:");
+    }
+}
+else
+{
+    addressBaseUrl = addressBaseUrls.First(kv => kv.Value != null).Value;
+}
+addressBaseUrl = "https://" + addressBaseUrl + ":7016";
+Console.WriteLine("Base URL: " + addressBaseUrl);
+
+builder.Services.AddSingleton<QueueManager>(sp =>
+{
+    var hubContext = sp.GetRequiredService<IHubContext<EWartezimmerHub>>();
+    return new QueueManager(hubContext, addressBaseUrl);
+});
 
 var app = builder.Build();
 
@@ -32,9 +94,7 @@ app.MapControllerRoute(
 
 app.MapHub<EWartezimmerHub>("/eWartezimmerHub");
 
-Console.WriteLine("Share this link: https://" + Dns.GetHostEntry(Dns.GetHostName())
-        .AddressList
-        .First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-        .ToString() + " with the correct port, whichever it is.");
+
+
 
 app.Run();

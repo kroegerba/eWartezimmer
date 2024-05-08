@@ -62,7 +62,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             QrCodeButton.classList.add("btn-primary");
             QrCodeButton.innerHTML = "<i class='fa-solid fa-qrcode'></i>";
             QrCodeButton.addEventListener("click", function() {
-                window.open("/Home/Patient/" + patient.Guid);
+                window.open("/Home/QrCode/" + patient.Guid);
             });
             div.appendChild(QrCodeButton);
 
