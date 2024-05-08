@@ -2,10 +2,15 @@
 @{
     ViewData["Title"] = "Patient";
 }
+<link rel="stylesheet" href="~/css/patient.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/leaflet.css" asp-append-version="true" />
 <input type="hidden" id="guid" value="@Model?.Patient?.Guid" />
-<div id="map"></div>
-<div id="countdown"></div>
-<div class="container">
+<div id="separator">
+    <div id="top-panel">
+    <div id="map"></div>
+</div>
+<div id="bottom-panel">
+    <div id="countdown"></div>
     <div class="row p-1">
         <div class="col-1">User</div>
         <div class="col-5"><input type="text" id="userInput" /></div>
@@ -30,6 +35,8 @@
         </div>
     </div>
 </div>
+</div>
+
 <script src="~/lib/leaflet/leaflet.js" asp-append-version="true"></script>
 <script src="~/js/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
 <script src="~/js/patient.js" asp-append-version="true"></script>

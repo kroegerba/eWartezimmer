@@ -65,6 +65,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
   if (yourPatient) {
       console.log(yourPatient.WaitingTime);
       circle.setRadius(yourPatient.WaitingTime); // Update the circle radius
+      map.fitBounds(circle.getBounds());
       document.getElementById("countdown").innerHTML = "Sie haben noch " + ((Math.floor(yourPatient.WaitingTime / 60) > 0)? Math.floor(yourPatient.WaitingTime / 60) + " Minuten und " : "") + yourPatient.WaitingTime % 60 + " Sekunden Zeit, bis Sie an der Reihe sind.";
   }
 });
@@ -84,3 +85,4 @@ document.getElementById("sendButton").addEventListener("click", function (event)
 
 // Call the updateCountdown function every second
 // const interval = setInterval(updateCountdown, 1000);
+
