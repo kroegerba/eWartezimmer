@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "QrCode";
 }
+<link rel="stylesheet" href="~/css/qrcode.css" asp-append-version="true" />
 <input type="hidden" id="guid" value="@Model?.Patient?.Guid" />
 <input type="hidden" id="baseurl" value="@Model?.BaseUrl" />
 <div id="qrcode"></div>
