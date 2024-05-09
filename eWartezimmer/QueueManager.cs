@@ -144,5 +144,13 @@ namespace eWartezimmer
             _queue.Add(patient);
             return patient;
         }
+
+        internal void ChangePatientName(string guid, string newName)
+        {
+            var patient = _queue.SingleOrDefault(p => p.Guid.Equals(guid));
+            if (patient != null) {
+                patient.Name = newName;
+            }
+        }
     }
 }

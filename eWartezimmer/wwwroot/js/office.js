@@ -71,6 +71,12 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             NameInput.setAttribute("type", "text");
             NameInput.setAttribute("name", "Name");
             NameInput.setAttribute("value", patient.Name);
+            NameInput.addEventListener("change", function(event) {
+                connection.invoke("ChangeName", patient.Guid, event.target.value)
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+            });
             div.appendChild(NameInput);
 
             // WaitingTime

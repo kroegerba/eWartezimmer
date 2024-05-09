@@ -30,6 +30,12 @@ namespace eWartezimmer.Hubs
             await Task.CompletedTask;
         }
 
+        public async Task ChangeName(string guid, string newName)
+        {
+            _queueManager.ChangePatientName(guid, newName);
+            await Task.CompletedTask;
+        }
+
 
     }
 }
