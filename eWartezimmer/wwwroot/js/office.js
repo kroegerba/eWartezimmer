@@ -185,8 +185,13 @@ connection.on("queueUpdateReceived", function (jsonListOfQueuers) {
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
     console.log("send button pressed");
-    connection.invoke("CreatePatient").catch(function (err) {
-        return console.error(err.toString());
-    });
+    // Prompt to input the name of the patient
+    var name = prompt("Bitte geben Sie den Namen des Patienten ein:");
+    if (name) {
+        // Create a patient if name is given
+        connection.invoke("CreatePatient", name).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
     event.preventDefault();
-  });
+});

@@ -24,9 +24,9 @@ namespace eWartezimmer.Hubs
         public async Task TellMeAllQueuers() => 
             await Clients.Caller.SendAsync("AllQueuers", _queueManager.JsonListAllQueuers());
 
-        public async Task CreatePatient()
+        public async Task CreatePatient(string name)
         {
-            Patient patient = _queueManager.CreatePatient();
+            Patient patient = _queueManager.CreatePatient(name: name);
             await Task.CompletedTask;
         }
 

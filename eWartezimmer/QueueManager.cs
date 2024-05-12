@@ -118,7 +118,7 @@ namespace eWartezimmer
             }
         }
 
-        internal Patient CreatePatient()
+        internal Patient CreatePatient(string name)
         {
             Patient? patientWithHighestTurnInLine = _queue.OrderByDescending(p => p.TurnInLine).FirstOrDefault();
             var longestWait =
@@ -130,7 +130,7 @@ namespace eWartezimmer
 
             var patient = new Patient(guid: guid)
             {
-                Name = guid,
+                Name = name,
                 TurnInLine = TakeTurnInLineNumber(),
                 WaitingTime = _queue.Count switch
                 {
