@@ -30,9 +30,27 @@ namespace eWartezimmer.Hubs
             await Task.CompletedTask;
         }
 
+        public async Task CreateOffice(string name)
+        {
+            Office office = _queueManager.CreateOffice(name: name);
+            await Task.CompletedTask;
+        }
+
         public async Task ChangeName(string guid, string newName)
         {
             _queueManager.ChangePatientName(guid, newName);
+            await Task.CompletedTask;
+        }
+
+        public async Task ChangeOfficeName(string guid, string newName)
+        {
+            _queueManager.ChangeOfficeName(guid, newName);
+            await Task.CompletedTask;
+        }
+
+        public async Task ChangeOfficeLocation(string guid, string latitude, string longitude)
+        {
+            _queueManager.ChangeOfficeLocation(guid, latitude, longitude);
             await Task.CompletedTask;
         }
 

@@ -9,6 +9,7 @@ namespace eWartezimmer
     {
         private readonly Timer _timer;
         private readonly IHubContext<EWartezimmerHub> _hubContext;
+        private readonly List<Office> _offices = new();
         private readonly List<Patient> _queue = new();
         private readonly string? _adminKey;
         internal string BaseUrl { get; set; }
@@ -43,7 +44,11 @@ namespace eWartezimmer
             }
             
             await _hubContext.Clients.All.SendAsync("AllQueuers", JsonListAllQueuers());
+            await _hubContext.Clients.All.SendAsync("AllOffices", JsonListAllOffices());
         }
+
+        private string JsonListAllOffices()
+            => JsonSerializer.Serialize(_offices);
 
         internal bool IsAdminKey(string? candidate)
             => candidate != null && candidate.Equals(_adminKey);
@@ -110,6 +115,34 @@ namespace eWartezimmer
             var patient = _queue.SingleOrDefault(p => p.Guid.Equals(guid));
             if (patient != null) {
                 patient.Name = newName;
+            }
+        }
+
+        internal Office CreateOffice(string name)
+        {
+            var guid = Guid.NewGuid().ToString();
+            var office = new Office(guid)
+            {
+                Name = name,
+            };
+            _offices.Add(office);
+            return office;
+        }
+
+        internal void ChangeOfficeName(string guid, string newName)
+        {
+            var office = _offices.SingleOrDefault(p => p.Guid.Equals(guid));
+            if (office != null) {
+                office.Name = newName;
+            }
+        }
+
+        internal void ChangeOfficeLocation(string guid, string newLatitude, string newLongitude)
+        {
+            var office = _offices.SingleOrDefault(p => p.Guid.Equals(guid));
+            if (office != null) {
+                office.Latitude = newLatitude;
+                office.Longitude = newLongitude;
             }
         }
     }
