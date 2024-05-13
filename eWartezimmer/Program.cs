@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
 var addressBaseUrl = "https://eWartezimmer.com";
+var AdminKey = Environment.GetEnvironmentVariable("eWartezimmerAdminKey");
 
 #if (DEBUG)
 {
@@ -72,7 +73,7 @@ var addressBaseUrl = "https://eWartezimmer.com";
 builder.Services.AddSingleton<QueueManager>(sp =>
 {
     var hubContext = sp.GetRequiredService<IHubContext<EWartezimmerHub>>();
-    return new QueueManager(hubContext, addressBaseUrl);
+    return new QueueManager(hubContext, addressBaseUrl, AdminKey);
 });
 
 var app = builder.Build();

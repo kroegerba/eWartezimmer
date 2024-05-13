@@ -1,0 +1,10 @@
+@model AdminViewModel
+@{
+    ViewData["Title"] = "Admin";
+}
+@if (Model.IsAdmin)
+{
+    <p>
+        <strong>Ist Admin:</strong> <code>@Model.IsAdmin</code>
+    </p>
+}

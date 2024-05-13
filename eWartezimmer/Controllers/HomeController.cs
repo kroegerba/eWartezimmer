@@ -24,6 +24,9 @@ public class HomeController : Controller
     public IActionResult Patient(string? id)
         => View(model: new PatientViewModel { Patient = _queueManager.GetPatientByGuid(id) });
 
+    public IActionResult Admin(string? id)
+        => View(model: new AdminViewModel { IsAdmin = _queueManager.IsAdminKey(id) });
+
     public IActionResult Office()
         => View();
 
