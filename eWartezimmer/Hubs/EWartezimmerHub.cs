@@ -48,9 +48,9 @@ namespace eWartezimmer.Hubs
             await Task.CompletedTask;
         }
 
-        public async Task ChangeOfficeLocation(string guid, string latitude, string longitude)
+        public async Task ChangeOfficeLocation(string guid, string address, string latitude, string longitude)
         {
-            _queueManager.ChangeOfficeLocation(guid, latitude, longitude);
+            _queueManager.ChangeOfficeLocation(guid, address, latitude, longitude);
             await Task.CompletedTask;
         }
 

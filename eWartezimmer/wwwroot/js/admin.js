@@ -19,19 +19,25 @@ connection.on("AllOffices", (jsonListOfOffices) => {
             div.classList.add("office");
             div.id = office.Guid;
 
-            const GuidInput = document.createElement("input");
-            GuidInput.classList.add("guidInput");
-            GuidInput.setAttribute("type", "text");
-            GuidInput.setAttribute("name", "Name");
-            GuidInput.setAttribute("value", office.Guid);
-            GuidInput.setAttribute("readonly", "");
-            div.appendChild(GuidInput);
+            const OfficeButton = document.createElement("button");
+            OfficeButton.classList.add("btn");
+            OfficeButton.classList.add("btn-primary");
+            OfficeButton.innerHTML = "Praxis-Link in Zwischenablage";
+            OfficeButton.addEventListener("click", function() {
+                navigator.clipboard.writeText(office.Link).then(function() {
+                    console.log("Copied to clipboard: " + office.Link);
+                }).catch(function(err) {
+                    console.error("Could not copy text: ", err);
+                });
+            });
+            div.appendChild(OfficeButton);
 
             const NameInput = document.createElement("input");
             NameInput.classList.add("nameInput");
             NameInput.setAttribute("type", "text");
             NameInput.setAttribute("name", "Name");
             NameInput.setAttribute("value", office.Name);
+            NameInput.setAttribute("placeholder", "Praxisname");
             NameInput.addEventListener("change", function (event) {
                 connection.invoke("ChangeOfficeName", office.Guid, event.target.value)
                     .catch(function (err) {
@@ -44,9 +50,10 @@ connection.on("AllOffices", (jsonListOfOffices) => {
             AddressInput.classList.add("addressInput");
             AddressInput.setAttribute("type", "text");
             AddressInput.setAttribute("name", "Address");
+            AddressInput.setAttribute("placeholder", "Adresse");
             AddressInput.addEventListener("change", function (event) {
-                $.get(location.protocol + '//nominatim.openstreetmap.org/search?format=json&q=' + event.target.value, function (data) {
-                    connection.invoke("ChangeOfficeLocation", office.Guid, data[0].lat, data[0].lon)
+                $.get(location.protocol + '//nominatim.openstreetmap.org/search?format=json&limit=1&q=' + event.target.value, function (data) {
+                    connection.invoke("ChangeOfficeLocation", office.Guid, event.target.value, data[0].lat, data[0].lon)
                         .catch(function (err) {
                             return console.error(err.toString());
                         });
@@ -56,7 +63,6 @@ connection.on("AllOffices", (jsonListOfOffices) => {
 
             const LatitudeInput = document.createElement("input");
             LatitudeInput.classList.add("latitudeInput");
-            LatitudeInput.classList.add("greyed-out");
             LatitudeInput.setAttribute("type", "text");
             LatitudeInput.setAttribute("name", "Latitude");
             LatitudeInput.setAttribute("value", office.Latitude);
@@ -65,7 +71,6 @@ connection.on("AllOffices", (jsonListOfOffices) => {
 
             const LongitudeInput = document.createElement("input");
             LongitudeInput.classList.add("longitudeInput");
-            LongitudeInput.classList.add("greyed-out");
             LongitudeInput.setAttribute("type", "text");
             LongitudeInput.setAttribute("name", "Longitude");
             LongitudeInput.setAttribute("value", office.Longitude);

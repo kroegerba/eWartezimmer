@@ -1,6 +1,7 @@
 namespace eWartezimmer.Models;
-public class AdminViewModel
+
+public class OfficeViewModel
 {
-    public bool IsAdmin { get; internal set; }
+    public Office? Office { get; set; }
     public string BaseUrl { get; internal set; } = string.Empty;
 }

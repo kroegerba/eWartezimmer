@@ -56,6 +56,9 @@ namespace eWartezimmer
         internal Patient? GetPatientByGuid(string? guid)
             => guid != null ? _queue.SingleOrDefault(patient => patient.Guid.Equals(guid)) : null;
 
+        internal Office? GetOfficeByGuid(string? guid)
+            => guid != null ? _offices.SingleOrDefault(office => office.Guid.Equals(guid)) : null;
+
         internal string JsonListAllQueuers()
             => JsonSerializer.Serialize(_queue);
 
@@ -121,8 +124,9 @@ namespace eWartezimmer
         internal Office CreateOffice(string name)
         {
             var guid = Guid.NewGuid().ToString();
-            var office = new Office(guid)
+            var office = new Office(BaseUrl, guid)
             {
+                Link = BaseUrl + "/Home/Office/" + guid,
                 Name = name,
             };
             _offices.Add(office);
@@ -137,13 +141,16 @@ namespace eWartezimmer
             }
         }
 
-        internal void ChangeOfficeLocation(string guid, string newLatitude, string newLongitude)
+        internal void ChangeOfficeLocation(string guid, string newAddress, string newLatitude, string newLongitude)
         {
             var office = _offices.SingleOrDefault(p => p.Guid.Equals(guid));
             if (office != null) {
+                office.Address = newAddress;
                 office.Latitude = newLatitude;
                 office.Longitude = newLongitude;
             }
         }
+
+
     }
 }
