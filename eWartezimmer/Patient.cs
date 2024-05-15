@@ -10,6 +10,7 @@ namespace eWartezimmer
         public int WaitingTime { get; internal set; }
         public int TreatmentDuration { get; internal set; } = 300;
         public int TreatmentTimeElapsed { get; internal set; } = 0;
-        
+        public string? Latitude { get; internal set; }
+        public string? Longitude { get; internal set; }
     }
 }

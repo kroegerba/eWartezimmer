@@ -5,36 +5,41 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/eWartezimmerHub").
 //Disable the send button until connection is established.
 document.getElementById("sendButton").disabled = true;
 
-var user = null;
+var patient = null;
 
-var map = L.map('map').setView([51.934328,7.651021], 15.5);
+
+
+
+// Set the initial value of the variable
+let guid = document.getElementById("guid").value;
+var latitude = document.getElementById("latitude").value;
+var longitude = document.getElementById("longitude").value;
+var greeting = document.getElementById("greeting").value;
+
+var map = L.map('map').setView([parseFloat(latitude),parseFloat(longitude)], 15.5);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-// Set the initial value of the variable
-let guid = document.getElementById("guid").value;
-var greeting = document.getElementById("greeting").value;
-
-var circle = L.circle([51.934328,7.651021], {
+var circle = L.circle([parseFloat(latitude),parseFloat(longitude)], {
     color: '#01c7b2',
     fillColor: '#01c7b2',
     fillOpacity: 0.420,
     radius: 0
 }).addTo(map);
 
-connection.on("ReceiveMessage", function (user, message) {
+connection.on("ReceiveMessage", function (patient, message) {
     var li = document.createElement("li");
     document.getElementById("messagesList").appendChild(li);
     // We can assign user-supplied strings to an element's textContent because it
     // is not interpreted as markup. If you're assigning in any other way, you 
     // should be aware of possible script injection concerns.
-    li.textContent = `${user} says ${message}`;
+    li.textContent = `${patient.Name} says ${message}`;
 });
 
-connection.on("AllQueuers", (jsonListOfQueuers) => {
+/*connection.on("AllQueuers", (jsonListOfQueuers) => {
     console.log("all queuers");
     // Parse the JSON list of patients
     const patients = JSON.parse(jsonListOfQueuers);
@@ -47,17 +52,41 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
         document.getElementById("greeting").innerHTML = "Hallo, " + yourPatient.Name + ".";
         document.getElementById("countdown").innerHTML = "Sie haben noch " + ((Math.floor(yourPatient.WaitingTime / 60) > 0)? Math.floor(yourPatient.WaitingTime / 60) + " Minuten und " : "") + yourPatient.WaitingTime % 60 + " Sekunden Zeit, bis Sie an der Reihe sind.";
     }
-  });
+});*/
+
+connection.on("Patient", (jsonPatient) => {
+    var parsedPatient = JSON.parse(jsonPatient);
+    console.log(parsedPatient);
+    if (parsedPatient) {
+        patient = parsedPatient;
+        if (latitude.localeCompare(patient.Latitude) + longitude.localeCompare(patient.Longitude) == 0) {
+
+        } else {
+            latitude = patient.Latitude;
+            longitude = patient.Longitude;
+            console.log([parseFloat(latitude), parseFloat(longitude)]);
+            circle.setLatLng([parseFloat(latitude), parseFloat(longitude)]);
+            map.flyTo([parseFloat(latitude), parseFloat(longitude)], 15.5);
+        }
+        circle.setRadius(patient.WaitingTime); // Update the circle radius
+        map.fitBounds(circle.getBounds());
+        document.getElementById("greeting").innerHTML = "Hallo, " + patient.Name + ".";
+        document.getElementById("countdown").innerHTML = "Sie haben noch " + ((Math.floor(patient.WaitingTime / 60) > 0)? Math.floor(patient.WaitingTime / 60) + " Minuten und " : "") + patient.WaitingTime % 60 + " Sekunden Zeit, bis Sie an der Reihe sind.";
+    }
+});
+
+
 
 connection.start().then(function () {
     document.getElementById("sendButton").disabled = false;
+    connection.invoke("SetConnectionId", guid);
 }).catch(function (err) {
     return console.error(err.toString());
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
   var message = document.getElementById("messageInput").value;
-  connection.invoke("SendMessage", user.Name, message).catch(function (err) {
+  connection.invoke("SendMessage", patient.Name, message).catch(function (err) {
       return console.error(err.toString());
   });
   event.preventDefault();

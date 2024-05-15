@@ -10,7 +10,6 @@ namespace eWartezimmer
         private readonly Timer _timer;
         private readonly IHubContext<EWartezimmerHub> _hubContext;
         private readonly List<Office> _offices = new();
-        private readonly List<Patient> _queue = new();
         private readonly string? _adminKey;
         internal string BaseUrl { get; set; }
 
@@ -29,22 +28,39 @@ namespace eWartezimmer
         internal async Task UpdateTickAsync()
         {
             var finishedPatient = (Patient?) null;
-            _queue.ForEach(patient =>
+            _offices.ForEach(office =>
             {
-                patient.WaitingTime = patient.WaitingTime > 0 ? patient.WaitingTime - 1 : 0;
-                patient.TreatmentTimeElapsed = patient.WaitingTime == 0 && patient.TreatmentTimeElapsed <= patient.TreatmentDuration ?
-                    patient.TreatmentTimeElapsed + 1 :
-                    0;
-                if (patient.TreatmentTimeElapsed == patient.TreatmentDuration) {
-                    finishedPatient = patient;
+                office.Queue.ForEach(patient =>
+                {
+                    patient.WaitingTime = patient.WaitingTime > 0 ? patient.WaitingTime - 1 : 0;
+                    patient.TreatmentTimeElapsed = patient.WaitingTime == 0 && patient.TreatmentTimeElapsed <= patient.TreatmentDuration ?
+                        patient.TreatmentTimeElapsed + 1 :
+                        0;
+                    if (patient.TreatmentTimeElapsed == patient.TreatmentDuration) {
+                        finishedPatient = patient;
+                    }
+                    if (patient.ConnectionId != null)
+                        _hubContext.Clients.Client(patient.ConnectionId).SendAsync("Patient", JsonPatient(patient.ConnectionId, office.Guid, patient.Guid));
+                });
+
+                if (finishedPatient != null) {
+                    RemoveQueuer(office, finishedPatient);
                 }
+                if (office.ConnectionId != null)
+                    _hubContext.Clients.Client(office.ConnectionId).SendAsync("AllQueuers", JsonListAllQueuers(office.Guid));
             });
-            if (finishedPatient != null) {
-                RemoveQueuer(finishedPatient);
-            }
             
-            await _hubContext.Clients.All.SendAsync("AllQueuers", JsonListAllQueuers());
             await _hubContext.Clients.All.SendAsync("AllOffices", JsonListAllOffices());
+        }
+
+        private string JsonPatient(string connectionId, string officeGuid, string patientGuid)
+        {
+            var patient = _offices.SingleOrDefault(o => officeGuid.Equals(o.Guid))?
+                            .Queue.SingleOrDefault(p => patientGuid.Equals(p.Guid));
+            if (patient != null) {
+                patient.ConnectionId = connectionId;
+            }
+            return JsonSerializer.Serialize(patient);
         }
 
         private string JsonListAllOffices()
@@ -54,28 +70,27 @@ namespace eWartezimmer
             => candidate != null && candidate.Equals(_adminKey);
 
         internal Patient? GetPatientByGuid(string? guid)
-            => guid != null ? _queue.SingleOrDefault(patient => patient.Guid.Equals(guid)) : null;
+            => guid != null ? _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => patient.Guid.Equals(guid)) : null;
 
         internal Office? GetOfficeByGuid(string? guid)
             => guid != null ? _offices.SingleOrDefault(office => office.Guid.Equals(guid)) : null;
 
-        internal string JsonListAllQueuers()
-            => JsonSerializer.Serialize(_queue);
+        internal string JsonListAllQueuers(string? guid)
+            => JsonSerializer.Serialize(_offices.SingleOrDefault(office => office.Guid.Equals(guid))?.Queue ?? []);
 
-        private int TakeTurnInLineNumber()
+        private int TakeTurnInLineNumber(Office office)
         {
-            Patient? patientWithHighestTurnInLine = _queue.OrderByDescending(p => p.TurnInLine).FirstOrDefault();
+            Patient? patientWithHighestTurnInLine = office.Queue.OrderByDescending(p => p.TurnInLine).FirstOrDefault();
             return patientWithHighestTurnInLine != null ? patientWithHighestTurnInLine.TurnInLine + 1 : 0;
         }
 
-        internal void RemoveQueuer(Patient queuer)
+        internal void RemoveQueuer(Office office, Patient queuer)
         {
-            var candidate = _queue.SingleOrDefault(patient => patient.Guid.Equals(queuer.Guid));
+            var candidate = office.Queue.SingleOrDefault(patient => patient.Guid.Equals(queuer.Guid));
             if (candidate != null)
             {
-                _queue.Remove(candidate);
-                // Decrease the turn in line for each patient after the departed patient
-                foreach (var patient in _queue)
+                office.Queue.Remove(candidate);
+                foreach (var patient in office.Queue)
                 {
                     if (patient.TurnInLine > candidate.TurnInLine)
                     {
@@ -86,9 +101,9 @@ namespace eWartezimmer
             }
         }
 
-        internal Patient CreatePatient(string name)
+        internal Patient CreatePatient(Office office, string name)
         {
-            Patient? patientWithHighestTurnInLine = _queue.OrderByDescending(p => p.TurnInLine).FirstOrDefault();
+            Patient? patientWithHighestTurnInLine = office.Queue.OrderByDescending(p => p.TurnInLine).FirstOrDefault();
             var longestWait =
                 (patientWithHighestTurnInLine != null) ?
                 patientWithHighestTurnInLine.WaitingTime + patientWithHighestTurnInLine.TreatmentDuration - patientWithHighestTurnInLine.TreatmentTimeElapsed :
@@ -99,23 +114,25 @@ namespace eWartezimmer
             var patient = new Patient(guid: guid)
             {
                 Name = name,
-                TurnInLine = TakeTurnInLineNumber(),
-                WaitingTime = _queue.Count switch
+                Latitude = office.Latitude,
+                Longitude = office.Longitude,
+                TurnInLine = TakeTurnInLineNumber(office),
+                WaitingTime = office.Queue.Count switch
                 {
                     0 => 0,
-                    1 => _queue.Single().TreatmentDuration - _queue.Single().TreatmentTimeElapsed,
-                    _ when _queue.Count >= 2 => longestWait,
+                    1 => office.Queue.Single().TreatmentDuration - office.Queue.Single().TreatmentTimeElapsed,
+                    _ when office.Queue.Count >= 2 => longestWait,
                     _ => 0
                 }
             };
 
-            _queue.Add(patient);
+            office.Queue.Add(patient);
             return patient;
         }
 
         internal void ChangePatientName(string guid, string newName)
         {
-            var patient = _queue.SingleOrDefault(p => p.Guid.Equals(guid));
+            var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => p.Guid.Equals(guid));
             if (patient != null) {
                 patient.Name = newName;
             }
@@ -124,7 +141,7 @@ namespace eWartezimmer
         internal Office CreateOffice(string name)
         {
             var guid = Guid.NewGuid().ToString();
-            var office = new Office(BaseUrl, guid)
+            var office = new Office(guid)
             {
                 Link = BaseUrl + "/Home/Office/" + guid,
                 Name = name,
@@ -151,6 +168,24 @@ namespace eWartezimmer
             }
         }
 
+        internal Office? Disconnect(string connectionId)
+        {
+            var office = _offices.SingleOrDefault(o => o.ConnectionId != null && o.ConnectionId.Equals(connectionId));
+            if (office != null)
+            {
+                office.ConnectionId = null;
+            }
+            return office;
+        }
 
+        internal void SetConnectionId(string guid, string connectionId)
+        {
+            var office = _offices.SingleOrDefault(o => guid.Equals(o.Guid));
+            if (office != null)
+                office.ConnectionId = connectionId;
+            var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => guid.Equals(p.Guid));
+            if (patient != null)
+                patient.ConnectionId = connectionId;
+        }
     }
 }

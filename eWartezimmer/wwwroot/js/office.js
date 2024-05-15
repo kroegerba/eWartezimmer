@@ -1,9 +1,13 @@
 "use strict";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/eWartezimmerHub").build();
+let guid = document.getElementById("guid").value;
 
 connection.start().then(function () {
     document.getElementById("sendButton").disabled = false;
+    connection.invoke("SetConnectionId", guid).catch(function (err) {
+        return console.error(err.toString());
+    });
 }).catch(function (err) {
     return console.error(err.toString());
 });
@@ -183,7 +187,7 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     var name = prompt("Bitte geben Sie den Namen des Patienten ein:");
     if (name) {
         // Create a patient if name is given
-        connection.invoke("CreatePatient", name).catch(function (err) {
+        connection.invoke("CreatePatient", guid, name).catch(function (err) {
             return console.error(err.toString());
         });
     }
