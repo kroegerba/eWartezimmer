@@ -1,8 +1,14 @@
+@model OfficeViewModel
 @{
-    ViewData["Title"] = "Office";
+    ViewData["Title"] = @Model?.Office?.Name ?? "Praxis";
 }
-<link rel="stylesheet" href="~/css/office.css" asp-append-version="true" />
-<input type="button" id="sendButton" value="Patient anlegen" />
-<div id="container"></div>
-<script src="~/js/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
-<script src="~/js/office.js"></script>
+
+@if (Model?.Office != null)
+{
+    <link rel="stylesheet" href="~/css/office.css" asp-append-version="true" />
+    <p>Praxis @Model.Office.Name (@Model.Office.Address - @Model.Office.Latitude, @Model.Office.Longitude)</p>
+    <input type="button" id="sendButton" value="Patient anlegen" />
+    <div id="container"></div>
+    <script src="~/js/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script src="~/js/office.js"></script>
+}

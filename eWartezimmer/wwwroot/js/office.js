@@ -28,15 +28,10 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
     // Parse the JSON list of patients
     const patients = JSON.parse(jsonListOfQueuers);
 
-    // Sort the patients based on a specific property, for example, patient name
-    patients.sort((a, b) => (a.name > b.name) ? 1 : -1);
-
     // Get the container element
     const container = document.getElementById("container");
 
-    // Clear existing content in the container
-    // container.innerHTML = "";
-
+    // Sort the patients based on a specific property, for example, patient name
     patients.sort((a, b) => a.TurnInLine - b.TurnInLine);
 
     // Create and append div elements for each patient
@@ -44,7 +39,6 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
         const element = document.getElementById(patient.Guid);
         if (!element) {
             // element with id does not exist yet, create it
-            console.log("Parent element has a child with ID 'childElementId'");
             const div = document.createElement("div");
             div.classList.add("patient");
             if (patient.TurnInLine === 0) {
