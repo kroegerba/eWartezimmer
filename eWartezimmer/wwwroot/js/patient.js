@@ -62,3 +62,67 @@ document.getElementById("sendButton").addEventListener("click", function (event)
   });
   event.preventDefault();
 });
+
+var marker;
+document.getElementById("showLocationButton").addEventListener("click", function () {
+    if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            // Send position to SignalR Hub
+            connection.invoke("UpdateUserLocation", lat, lng).catch(function (err) {
+                console.error(err.toString());
+            });
+
+            // Show user's location on the map
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                // Use Leaflet's default icon
+                marker = L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        iconSize: [12, 12],
+                        html: '<div style="border: 2px solid red; border-radius: 50%; width: 12px; height: 12px;"></div>'
+                    })
+                }).addTo(map);
+            }
+            // Center map on user's location
+            map.setView([lat, lng], 15);
+        }, function (error) {
+            console.error('Error getting geolocation:', error);
+        });
+    } else {
+        console.error('Geolocation is not supported by your browser');
+    }
+});
+
+function updateMarker() {
+    if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            // Show user's location on the map
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                // Use Leaflet's default icon
+                marker = L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        iconSize: [12, 12],
+                        html: '<div style="border: 2px solid red; border-radius: 50%; width: 12px; height: 12px;"></div>'
+                    })
+                }).addTo(map);
+            }
+        }, function (error) {
+            console.error('Error getting geolocation:', error);
+        });
+    } else {
+        console.error('Geolocation is not supported by your browser');
+    }
+}
+
+setInterval(updateMarker, 5000);

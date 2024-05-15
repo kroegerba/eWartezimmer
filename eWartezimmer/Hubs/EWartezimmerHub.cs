@@ -35,7 +35,11 @@ namespace eWartezimmer.Hubs
             _queueManager.ChangePatientName(guid, newName);
             await Task.CompletedTask;
         }
-
+        
+        public async Task UpdateUserLocation(double lat, double lng)
+        {
+            await Clients.All.SendAsync("UserLocationUpdated", lat, lng);
+        }
 
     }
 }
