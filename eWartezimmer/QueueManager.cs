@@ -138,6 +138,20 @@ namespace eWartezimmer
             }
         }
 
+        internal void ChangeTreatmentDuration(string guid, string newTreatmentDuration)
+        {
+            var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => p.Guid.Equals(guid));
+            if (patient != null && int.TryParse(newTreatmentDuration, out var durationInMinutes)) {
+                var office = _offices.SingleOrDefault(o => o.Queue.Contains(patient));
+                if (office != null) {
+                    foreach (var queuer in office.Queue.Where(p => p.TurnInLine > patient.TurnInLine)) {
+                        queuer.WaitingTime = queuer.WaitingTime - patient.TreatmentDuration + durationInMinutes * 60;
+                    }
+                    patient.TreatmentDuration = durationInMinutes * 60;
+                }
+            }
+        }
+
         internal Office CreateOffice(string name)
         {
             var guid = Guid.NewGuid().ToString();
@@ -187,5 +201,7 @@ namespace eWartezimmer
             if (patient != null)
                 patient.ConnectionId = connectionId;
         }
+
+
     }
 }

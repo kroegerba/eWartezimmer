@@ -118,7 +118,17 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             TreatmentDurationInput.classList.add("treatmentDurationInput");
             TreatmentDurationInput.setAttribute("name", "TreatmentDuration");
             TreatmentDurationInput.setAttribute("value", formatTime(patient.TreatmentDuration));
-            TreatmentDurationInput.setAttribute("readonly", true);
+            TreatmentTimeElapsedInput.setAttribute("readonly", true);
+            
+            TreatmentDurationInput.addEventListener("click", function(event) {
+                var duration = prompt("Bitte geben Sie die neue Behandlungsdauer des Patienten ein (in Minuten):");
+                if (duration) {
+                    connection.invoke("ChangeTreatmentDuration", patient.Guid, duration)
+                        .catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                }
+            });
             div.appendChild(TreatmentDurationInput);
 
 
@@ -136,29 +146,18 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                 if (patient.TurnInLine === 0) {
                     element.classList.add("inTreatment");
                 }
-            } else {
-                // If labelElement is not found, log an error or handle accordingly
-                console.log("Label element with class 'turnnumber' not found.");
             }
-            var labelElement = element.querySelector(".waitingTimeInput");
-            if (labelElement) {
-                // If labelElement is found, update its textContent
-                //var wt = Math.floor(countdownValue / 60).toString().padStart(2, '0') + ":" + (patient.WaitingTime % 60).toString().padStart(2, '0');
-                // console.log(wt);
-                labelElement.setAttribute("value", formatTime(patient.WaitingTime));
+            const WaitingTimeInput = element.querySelector(".waitingTimeInput");
+            if (WaitingTimeInput) {
+                WaitingTimeInput.setAttribute("value", formatTime(patient.WaitingTime));
             }
-            else {
-                // If labelElement is not found, log an error or handle accordingly
-                console.log("Label element with class 'turnnumber' not found.");
+            const TreatmentDurationInput = element.querySelector(".treatmentDurationInput");
+            if (TreatmentDurationInput) {
+                TreatmentDurationInput.setAttribute("value", formatTime(patient.TreatmentDuration));
             }
-            var labelElement = element.querySelector(".treatmentTimeElapsedInput");
-            if (labelElement) {
-                // If labelElement is found, update its textContent
-                labelElement.setAttribute("value", formatTime(patient.TreatmentTimeElapsed));
-            }
-            else {
-                // If labelElement is not found, log an error or handle accordingly
-                console.log("Label element with class 'turnnumber' not found.");
+            const TreatmentTimeElapsedInput = element.querySelector(".treatmentTimeElapsedInput");
+            if (TreatmentTimeElapsedInput) {
+                TreatmentTimeElapsedInput.setAttribute("value", formatTime(patient.TreatmentTimeElapsed));
             }
         }
 
