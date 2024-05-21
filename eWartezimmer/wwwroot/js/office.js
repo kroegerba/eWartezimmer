@@ -47,6 +47,8 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             div.classList.add("patient");
             if (patient.TurnInLine === 0) {
                 div.classList.add("inTreatment");
+            } else {
+                div.classList.remove("inTreatment");
             }
             div.id = patient.Guid;
 
@@ -63,6 +65,18 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                 window.open("/Home/QrCode/" + patient.Guid);
             });
             div.appendChild(QrCodeButton);
+
+            const AheadButton = document.createElement("button");
+            AheadButton.classList.add("btn");
+            AheadButton.classList.add("btn-primary");
+            AheadButton.innerHTML = "ahead";
+            AheadButton.addEventListener("click", function() {
+                connection.invoke("LetSomeoneGoAhead", patient.Guid)
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+            });
+            div.appendChild(AheadButton);
 
             const NameInput = document.createElement("input");
             NameInput.classList.add("nameInput");
@@ -139,6 +153,11 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             container.appendChild(div);
         } else {
             // element already existing, only update where changed
+            if (patient.TurnInLine === 0) {
+                element.classList.add("inTreatment");
+            } else {
+                element.classList.remove("inTreatment");
+            }
             var labelElement = element.querySelector(".turnnumber");
             if (labelElement) {
                 // If labelElement is found, update its textContent

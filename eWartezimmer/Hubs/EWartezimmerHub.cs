@@ -52,7 +52,13 @@ namespace eWartezimmer.Hubs
             _queueManager.ChangeTreatmentDuration(guid, newTreatmentDuration);
             await Task.CompletedTask;
         }
-                public async Task ChangeOfficeName(string guid, string newName)
+
+        public async Task LetSomeoneGoAhead(string guid) 
+        {
+            _queueManager.LetSomeoneGoAhead(guid);
+            await Task.CompletedTask;
+        }
+        public async Task ChangeOfficeName(string guid, string newName)
         {
             _queueManager.ChangeOfficeName(guid, newName);
             await Task.CompletedTask;

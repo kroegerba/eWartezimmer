@@ -152,6 +152,22 @@ namespace eWartezimmer
             }
         }
 
+        internal void LetSomeoneGoAhead(string guid)
+        {
+            var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => p.Guid.Equals(guid));
+            if (patient != null) {
+                var office = _offices.SingleOrDefault(o => o.Queue.Contains(patient));
+                if (office != null) {
+                    var queuer = office.Queue.SingleOrDefault(p => p.TurnInLine - 1 == patient.TurnInLine);
+                    if (queuer != null) {
+                        (patient.TurnInLine, queuer.TurnInLine) = (queuer.TurnInLine, patient.TurnInLine);
+                        queuer.WaitingTime -= patient.TreatmentDuration;
+                        patient.WaitingTime += queuer.TreatmentDuration;
+                    }
+                }
+            }
+        }
+
         internal Office CreateOffice(string name)
         {
             var guid = Guid.NewGuid().ToString();
