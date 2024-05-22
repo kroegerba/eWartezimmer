@@ -152,9 +152,34 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             });
             div.appendChild(TreatmentDurationInput);
 
+            const MessageInput = document.createElement("input");
+            MessageInput.setAttribute("type", "text");
+            MessageInput.setAttribute("name", "Message");
+            div.appendChild(MessageInput);
 
+            const SendMessageButton = document.createElement("button");
+            SendMessageButton.classList.add("btn");
+            SendMessageButton.classList.add("btn-primary");
+            SendMessageButton.innerHTML = "send";
+            SendMessageButton.addEventListener("click", function() {
+                connection.invoke("SendMessageToPatient", patient.Guid, MessageInput.value)
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                const element = document.getElementById(patient.Guid);
+                if (element) {
+                    console.log("has patient Guid div: " + patient.Guid);
+                    var messageList = element.querySelector(".messageList");
+                    var li = document.createElement("li");
+                    li.textContent = `Office says ${MessageInput.value}`;
+                    messageList.appendChild(li);
+                }
+            });
+            div.appendChild(SendMessageButton);
 
-
+            const MessageList = document.createElement("ul");
+            MessageList.classList.add("messageList");
+            div.appendChild(MessageList);
 
             // add div to container
             container.appendChild(div);
@@ -200,6 +225,18 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
 
 
     });
+});
+
+connection.on("ReceiveMessage", function (patientGuid, message) {
+    console.log("ReceivedMessage" + message + " by " + patientGuid);
+    const element = document.getElementById(patientGuid);
+    if (element) {
+        console.log("has patientGuid div: " + patientGuid);
+        var messageList = element.querySelector(".messageList");
+        var li = document.createElement("li");
+        li.textContent = `Patient says ${message}`;
+        messageList.appendChild(li);
+    }
 });
 
 connection.on("queueUpdateReceived", function (jsonListOfQueuers) {

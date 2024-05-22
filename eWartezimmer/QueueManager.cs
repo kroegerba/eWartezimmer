@@ -72,8 +72,14 @@ namespace eWartezimmer
         internal Patient? GetPatientByGuid(string? guid)
             => guid != null ? _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => patient.Guid.Equals(guid)) : null;
 
+        internal Patient? GetPatientByConnectionId(string connectionId) 
+            => _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => connectionId.Equals(patient.ConnectionId));
+
         internal Office? GetOfficeByGuid(string? guid)
             => guid != null ? _offices.SingleOrDefault(office => office.Guid.Equals(guid)) : null;
+        
+        internal Office? GetOfficeByPatient(Patient? patient) 
+            => patient != null ? _offices.SingleOrDefault(office => office.Queue.Contains(patient)) : null;
 
         internal string JsonListAllQueuers(string? guid)
             => JsonSerializer.Serialize(_offices.SingleOrDefault(office => office.Guid.Equals(guid))?.Queue ?? []);
