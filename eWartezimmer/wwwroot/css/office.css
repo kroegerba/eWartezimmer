@@ -46,6 +46,10 @@
     display: none;
 }
 
+.patient.inTreatment .btn.btn-primary {
+    display: none;
+}
+
 :not(.inTreatment).patient > .treatmentTimeElapsedLabel {
     display: none;
 }
