@@ -28,6 +28,12 @@ function formatTime(seconds) {
     return formattedHours + ":" + formattedMinutes + ":" + formattedSeconds;
 }
 
+function moveDown(element){
+    var lowerSibling = element.nextElementSibling;
+    if(lowerSibling === null) return;
+    lowerSibling.insertAdjacentElement("afterend", element);
+}
+
 connection.on("AllQueuers", (jsonListOfQueuers) => {
     // Parse the JSON list of patients
     const patients = JSON.parse(jsonListOfQueuers);
@@ -75,6 +81,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                     .catch(function (err) {
                         return console.error(err.toString());
                     });
+                moveDown(div);
             });
             div.appendChild(AheadButton);
 
