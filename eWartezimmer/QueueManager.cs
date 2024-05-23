@@ -72,8 +72,14 @@ namespace eWartezimmer
         internal Patient? GetPatientByGuid(string? guid)
             => guid != null ? _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => patient.Guid.Equals(guid)) : null;
 
+        internal Patient? GetPatientByConnectionId(string connectionId) 
+            => _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => connectionId.Equals(patient.ConnectionId));
+
         internal Office? GetOfficeByGuid(string? guid)
             => guid != null ? _offices.SingleOrDefault(office => office.Guid.Equals(guid)) : null;
+        
+        internal Office? GetOfficeByPatient(Patient? patient) 
+            => patient != null ? _offices.SingleOrDefault(office => office.Queue.Contains(patient)) : null;
 
         internal string JsonListAllQueuers(string? guid)
             => JsonSerializer.Serialize(_offices.SingleOrDefault(office => office.Guid.Equals(guid))?.Queue ?? []);
@@ -145,9 +151,10 @@ namespace eWartezimmer
                 var office = _offices.SingleOrDefault(o => o.Queue.Contains(patient));
                 if (office != null) {
                     foreach (var queuer in office.Queue.Where(p => p.TurnInLine > patient.TurnInLine)) {
-                        queuer.WaitingTime = queuer.WaitingTime - patient.TreatmentDuration + durationInMinutes * 60;
+                        queuer.WaitingTime = queuer.WaitingTime - patient.TreatmentDuration + patient.TreatmentTimeElapsed + durationInMinutes * 60;
                     }
                     patient.TreatmentDuration = durationInMinutes * 60;
+                    patient.TreatmentTimeElapsed = 0;
                 }
             }
         }
@@ -161,7 +168,7 @@ namespace eWartezimmer
                     var queuer = office.Queue.SingleOrDefault(p => p.TurnInLine - 1 == patient.TurnInLine);
                     if (queuer != null) {
                         (patient.TurnInLine, queuer.TurnInLine) = (queuer.TurnInLine, patient.TurnInLine);
-                        queuer.WaitingTime -= patient.TreatmentDuration;
+                        queuer.WaitingTime = patient.WaitingTime;
                         patient.WaitingTime += queuer.TreatmentDuration;
                     }
                 }

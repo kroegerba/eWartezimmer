@@ -12,6 +12,26 @@ namespace eWartezimmer.Hubs
         public async Task SendMessageToConnectionId(string connectionId, string message)
             => await Clients.Client(connectionId).SendAsync("ReceiveMessage", connectionId, message);
 
+        public async Task SendMessageToOffice(string message)
+        {
+            var patient = _queueManager.GetPatientByConnectionId(Context.ConnectionId);
+            var office = _queueManager.GetOfficeByPatient(patient);
+            if (patient != null && office != null && office.ConnectionId != null) {
+                await Clients.Client(office.ConnectionId).SendAsync("ReceiveMessage", patient.Guid, message);
+            } else {
+                await Task.CompletedTask;
+            }
+        }
+
+        public async Task SendMessageToPatient(string patientGuid, string message)
+        {
+            var patient = _queueManager.GetPatientByGuid(patientGuid);
+            var office = _queueManager.GetOfficeByPatient(patient);
+            if (office != null && patient != null && patient.ConnectionId != null) {
+                await Clients.Client(patient.ConnectionId).SendAsync("ReceiveMessage", office.Guid, message);
+            }
+        }
+
         public async Task SetConnectionId(string guid)
         {
             _queueManager.SetConnectionId(guid, Context.ConnectionId);

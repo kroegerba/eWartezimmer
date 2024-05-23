@@ -30,29 +30,14 @@ var circle = L.circle([parseFloat(latitude),parseFloat(longitude)], {
     radius: 0
 }).addTo(map);
 
-connection.on("ReceiveMessage", function (patient, message) {
+connection.on("ReceiveMessage", function (officeGuid, message) {
     var li = document.createElement("li");
     document.getElementById("messagesList").appendChild(li);
     // We can assign user-supplied strings to an element's textContent because it
     // is not interpreted as markup. If you're assigning in any other way, you 
     // should be aware of possible script injection concerns.
-    li.textContent = `${patient.Name} says ${message}`;
+    li.textContent = `Office says ${message}`;
 });
-
-/*connection.on("AllQueuers", (jsonListOfQueuers) => {
-    console.log("all queuers");
-    // Parse the JSON list of patients
-    const patients = JSON.parse(jsonListOfQueuers);
-    const yourPatient = patients.find(patient => patient.Guid === guid);
-    if (yourPatient) {
-        user = yourPatient;
-        console.log(yourPatient.WaitingTime);
-        circle.setRadius(yourPatient.WaitingTime); // Update the circle radius
-        map.fitBounds(circle.getBounds());
-        document.getElementById("greeting").innerHTML = "Hallo, " + yourPatient.Name + ".";
-        document.getElementById("countdown").innerHTML = "Sie haben noch " + ((Math.floor(yourPatient.WaitingTime / 60) > 0)? Math.floor(yourPatient.WaitingTime / 60) + " Minuten und " : "") + yourPatient.WaitingTime % 60 + " Sekunden Zeit, bis Sie an der Reihe sind.";
-    }
-});*/
 
 connection.on("Patient", (jsonPatient) => {
     var parsedPatient = JSON.parse(jsonPatient);
@@ -85,11 +70,15 @@ connection.start().then(function () {
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
-  var message = document.getElementById("messageInput").value;
-  connection.invoke("SendMessage", patient.Name, message).catch(function (err) {
-      return console.error(err.toString());
-  });
-  event.preventDefault();
+    var message = document.getElementById("messageInput").value;
+    connection.invoke("SendMessageToOffice", message)
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
+    var li = document.createElement("li");
+    document.getElementById("messagesList").appendChild(li);
+    li.textContent = `Patient says ${message}`;
+    event.preventDefault();
 });
 
 var marker;
