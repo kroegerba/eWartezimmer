@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
-var addressBaseUrl = "https://eWartezimmer.com";
+var addressBaseUrl = "https://live.eWartezimmer.com";
 var AdminKey = Environment.GetEnvironmentVariable("eWartezimmerAdminKey");
 
 #if (DEBUG)
