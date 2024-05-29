@@ -31,12 +31,22 @@ var circle = L.circle([parseFloat(latitude),parseFloat(longitude)], {
 }).addTo(map);
 
 connection.on("ReceiveMessage", function (officeGuid, message) {
-    var li = document.createElement("li");
-    document.getElementById("messagesList").appendChild(li);
-    // We can assign user-supplied strings to an element's textContent because it
-    // is not interpreted as markup. If you're assigning in any other way, you 
-    // should be aware of possible script injection concerns.
-    li.textContent = `Office says ${message}`;
+    if (officeGuid === "self")
+    {
+        var li = document.createElement("li");
+        document.getElementById("messagesList").appendChild(li);
+        // We can assign user-supplied strings to an element's textContent because it
+        // is not interpreted as markup. If you're assigning in any other way, you 
+        // should be aware of possible script injection concerns.
+        li.textContent = `Patient says ${message}`;
+    } else {
+        var li = document.createElement("li");
+        document.getElementById("messagesList").appendChild(li);
+        // We can assign user-supplied strings to an element's textContent because it
+        // is not interpreted as markup. If you're assigning in any other way, you 
+        // should be aware of possible script injection concerns.
+        li.textContent = `Office says ${message}`;
+    }
 });
 
 connection.on("Patient", (jsonPatient) => {
@@ -76,9 +86,6 @@ document.getElementById("messageInput").addEventListener('keydown', function(eve
             .catch(function (err) {
                 return console.error(err.toString());
             });
-        var li = document.createElement("li");
-        document.getElementById("messagesList").appendChild(li);
-        li.textContent = `Patient says ${message}`;
         event.preventDefault();
     }
 });

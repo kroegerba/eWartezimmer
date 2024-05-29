@@ -18,6 +18,9 @@ namespace eWartezimmer.Hubs
             var office = _queueManager.GetOfficeByPatient(patient);
             if (patient != null && office != null && office.ConnectionId != null) {
                 await Clients.Client(office.ConnectionId).SendAsync("ReceiveMessage", patient.Guid, message);
+                foreach (var connectionId in patient.ConnectionIds) {
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", "self", message);
+                }
             } else {
                 await Task.CompletedTask;
             }
