@@ -69,6 +69,20 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
+document.getElementById("messageInput").addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        var message = document.getElementById("messageInput").value;
+        connection.invoke("SendMessageToOffice", message)
+            .catch(function (err) {
+                return console.error(err.toString());
+            });
+        var li = document.createElement("li");
+        document.getElementById("messagesList").appendChild(li);
+        li.textContent = `Patient says ${message}`;
+        event.preventDefault();
+    }
+});
+
 document.getElementById("sendButton").addEventListener("click", function (event) {
     var message = document.getElementById("messageInput").value;
     connection.invoke("SendMessageToOffice", message)
