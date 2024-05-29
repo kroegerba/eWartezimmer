@@ -39,17 +39,14 @@ namespace eWartezimmer
                     if (patient.TreatmentTimeElapsed == patient.TreatmentDuration) {
                         finishedPatient = patient;
                     }
-                    if (patient.ConnectionId != null)
+                    if (patient.ConnectionIds != null)
                     {
-                        var connectionIdCopy = new List<string?>(patient.ConnectionId);
-                        
-                        foreach (var connectionId in connectionIdCopy)
+                        foreach (var connectionId in patient.ConnectionIds)
                         {
                             _hubContext.Clients.Client(connectionId).SendAsync("Patient", JsonPatient(connectionId, office.Guid, patient.Guid));
-                            patient.ConnectionId.Remove(connectionId);
                         }
                     }
-                });    
+                });
 
                 if (finishedPatient != null) {
                     RemoveQueuer(office, finishedPatient);
@@ -65,9 +62,6 @@ namespace eWartezimmer
         {
             var patient = _offices.SingleOrDefault(o => officeGuid.Equals(o.Guid))?
                             .Queue.SingleOrDefault(p => patientGuid.Equals(p.Guid));
-            if (patient != null) {
-                patient.ConnectionId.Add(connectionId);
-            }
             return JsonSerializer.Serialize(patient);
         }
 
@@ -81,7 +75,7 @@ namespace eWartezimmer
             => guid != null ? _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => patient.Guid.Equals(guid)) : null;
 
         internal Patient? GetPatientByConnectionId(string connectionId) 
-            => _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => connectionId.Equals(patient.ConnectionId.Any()));
+            => _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => patient.ConnectionIds.Contains(connectionId));
 
         internal Office? GetOfficeByGuid(string? guid)
             => guid != null ? _offices.SingleOrDefault(office => office.Guid.Equals(guid)) : null;
@@ -213,14 +207,18 @@ namespace eWartezimmer
             }
         }
 
-        internal Office? Disconnect(string connectionId)
+        internal void Disconnect(string connectionId)
         {
             var office = _offices.SingleOrDefault(o => o.ConnectionId != null && o.ConnectionId.Equals(connectionId));
             if (office != null)
             {
                 office.ConnectionId = null;
             }
-            return office;
+            var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => p.ConnectionIds.Contains(connectionId));
+            if (patient != null)
+            {
+                patient.ConnectionIds.Remove(connectionId);
+            }
         }
 
         internal void SetConnectionId(string guid, string connectionId)
@@ -231,13 +229,9 @@ namespace eWartezimmer
             var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => guid.Equals(p.Guid));
             if (patient != null)
             {
-                if (patient.ConnectionId == null)
+                if (!patient.ConnectionIds.Contains(connectionId))
                 {
-                    patient.ConnectionId = new List<string?>();
-                }
-                if (!patient.ConnectionId.Contains(connectionId))
-                {
-                    patient.ConnectionId.Add(connectionId);
+                    patient.ConnectionIds.Add(connectionId);
                 }
             }
         }

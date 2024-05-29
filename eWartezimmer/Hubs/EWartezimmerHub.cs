@@ -27,8 +27,8 @@ namespace eWartezimmer.Hubs
         {
             var patient = _queueManager.GetPatientByGuid(patientGuid);
             var office = _queueManager.GetOfficeByPatient(patient);
-            if (office != null && patient != null && patient.ConnectionId != null) {
-                foreach (var connectionId in patient.ConnectionId)
+            if (office != null && patient != null && patient.ConnectionIds != null) {
+                foreach (var connectionId in patient.ConnectionIds)
                 {
                 await Clients.Client(connectionId).SendAsync("ReceiveMessage", office.Guid, message);
                 }
@@ -43,7 +43,7 @@ namespace eWartezimmer.Hubs
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            var office = _queueManager.Disconnect(connectionId: Context.ConnectionId);
+            _queueManager.Disconnect(connectionId: Context.ConnectionId);
             // _queueManager.UnregisterQueuer(Context.ConnectionId);
             await Task.CompletedTask;
         }

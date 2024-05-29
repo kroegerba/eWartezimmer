@@ -5,7 +5,7 @@ namespace eWartezimmer
         
         public string Guid { get; } = guid;
         public string? Name { get; internal set; }
-        public List<string?> ConnectionId { get; internal set; }
+        public List<string> ConnectionIds { get; internal set; } = [];
         public int TurnInLine { get; internal set; }
         public int WaitingTime { get; internal set; }
         public int TreatmentDuration { get; internal set; } = 300;
