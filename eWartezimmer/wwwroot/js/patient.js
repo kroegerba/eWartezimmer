@@ -33,20 +33,17 @@ var circle = L.circle([parseFloat(latitude),parseFloat(longitude)], {
 connection.on("ReceiveMessage", function (officeGuid, message) {
     if (officeGuid === "self")
     {
-        var li = document.createElement("li");
-        document.getElementById("messagesList").appendChild(li);
-        // We can assign user-supplied strings to an element's textContent because it
-        // is not interpreted as markup. If you're assigning in any other way, you 
-        // should be aware of possible script injection concerns.
-        li.textContent = `Patient says ${message}`;
+        var div = document.createElement("div");
+        document.getElementById("chatWindow").appendChild(div);
+        div.textContent = `Patient says ${message}`;
     } else {
-        var li = document.createElement("li");
-        document.getElementById("messagesList").appendChild(li);
-        // We can assign user-supplied strings to an element's textContent because it
-        // is not interpreted as markup. If you're assigning in any other way, you 
-        // should be aware of possible script injection concerns.
-        li.textContent = `Office says ${message}`;
+        var div = document.createElement("div");
+        document.getElementById("chatWindow").appendChild(div);
+        div.textContent = `Office says ${message}`;
     }
+    // Scroll to the bottom of the chat window
+    var chatWindow = document.getElementById("chatWindow");
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 });
 
 connection.on("Patient", (jsonPatient) => {
@@ -70,8 +67,6 @@ connection.on("Patient", (jsonPatient) => {
     }
 });
 
-
-
 connection.start().then(function () {
     document.getElementById("sendButton").disabled = false;
     connection.invoke("SetConnectionId", guid);
@@ -79,9 +74,9 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
-document.getElementById("messageInput").addEventListener('keydown', function(event) {
+document.getElementById("chatInput").addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-        var message = document.getElementById("messageInput").value;
+        var message = document.getElementById("chatInput").value;
         connection.invoke("SendMessageToOffice", message)
             .catch(function (err) {
                 return console.error(err.toString());
@@ -91,14 +86,12 @@ document.getElementById("messageInput").addEventListener('keydown', function(eve
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
-    var message = document.getElementById("messageInput").value;
+    var message = document.getElementById("chatInput").value;
+    document.getElementById("chatInput").value = '';
     connection.invoke("SendMessageToOffice", message)
         .catch(function (err) {
             return console.error(err.toString());
         });
-    var li = document.createElement("li");
-    document.getElementById("messagesList").appendChild(li);
-    li.textContent = `Patient says ${message}`;
     event.preventDefault();
 });
 
