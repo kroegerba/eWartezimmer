@@ -87,6 +87,7 @@ connection.start().then(function () {
 document.getElementById("chatInput").addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         var message = document.getElementById("chatInput").value;
+        document.getElementById("chatInput").value = "";
         connection.invoke("SendMessageToOffice", message)
             .catch(function (err) {
                 return console.error(err.toString());
@@ -97,7 +98,7 @@ document.getElementById("chatInput").addEventListener('keydown', function(event)
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
     var message = document.getElementById("chatInput").value;
-    document.getElementById("chatInput").value = '';
+    document.getElementById("chatInput").value = "";
     connection.invoke("SendMessageToOffice", message)
         .catch(function (err) {
             return console.error(err.toString());
