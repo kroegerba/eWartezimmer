@@ -33,13 +33,23 @@ var circle = L.circle([parseFloat(latitude),parseFloat(longitude)], {
 connection.on("ReceiveMessage", function (officeGuid, message) {
     if (officeGuid === "self")
     {
-        var div = document.createElement("div");
-        document.getElementById("chatWindow").appendChild(div);
-        div.textContent = `Patient says ${message}`;
+        var messageContainerDiv = document.createElement("div");
+        messageContainerDiv.classList.add("message-container");
+        messageContainerDiv.classList.add("right");
+        var messageDiv = document.createElement("div");
+        messageDiv.classList.add("message");
+        messageContainerDiv.appendChild(messageDiv);
+        document.getElementById("chatWindow").appendChild(messageContainerDiv);
+        messageDiv.textContent = `${message}`;
     } else {
-        var div = document.createElement("div");
-        document.getElementById("chatWindow").appendChild(div);
-        div.textContent = `Office says ${message}`;
+        var messageContainerDiv = document.createElement("div");
+        messageContainerDiv.classList.add("message-container");
+        messageContainerDiv.classList.add("left");
+        var messageDiv = document.createElement("div");
+        messageDiv.classList.add("message");
+        messageContainerDiv.appendChild(messageDiv);
+        document.getElementById("chatWindow").appendChild(messageContainerDiv);
+        messageDiv.textContent = `${message}`;
     }
     // Scroll to the bottom of the chat window
     var chatWindow = document.getElementById("chatWindow");
