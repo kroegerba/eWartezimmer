@@ -155,6 +155,22 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             const MessageInput = document.createElement("input");
             MessageInput.setAttribute("type", "text");
             MessageInput.setAttribute("name", "Message");
+            MessageInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    connection.invoke("SendMessageToPatient", patient.Guid, MessageInput.value)
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                    const element = document.getElementById(patient.Guid);
+                    if (element) {
+                        console.log("has patient Guid div: " + patient.Guid);
+                        var messageList = element.querySelector(".messageList");
+                        var li = document.createElement("li");
+                        li.textContent = `Office says ${MessageInput.value}`;
+                        messageList.appendChild(li);
+                    }
+                }
+            });
             div.appendChild(MessageInput);
 
             const SendMessageButton = document.createElement("button");
