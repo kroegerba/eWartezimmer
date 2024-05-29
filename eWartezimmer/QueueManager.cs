@@ -40,8 +40,16 @@ namespace eWartezimmer
                         finishedPatient = patient;
                     }
                     if (patient.ConnectionId != null)
-                        _hubContext.Clients.Client(patient.ConnectionId).SendAsync("Patient", JsonPatient(patient.ConnectionId, office.Guid, patient.Guid));
-                });
+                    {
+                        var connectionIdCopy = new List<string?>(patient.ConnectionId);
+                        
+                        foreach (var connectionId in connectionIdCopy)
+                        {
+                            _hubContext.Clients.Client(connectionId).SendAsync("Patient", JsonPatient(connectionId, office.Guid, patient.Guid));
+                            patient.ConnectionId.Remove(connectionId);
+                        }
+                    }
+                });    
 
                 if (finishedPatient != null) {
                     RemoveQueuer(office, finishedPatient);
@@ -58,7 +66,7 @@ namespace eWartezimmer
             var patient = _offices.SingleOrDefault(o => officeGuid.Equals(o.Guid))?
                             .Queue.SingleOrDefault(p => patientGuid.Equals(p.Guid));
             if (patient != null) {
-                patient.ConnectionId = connectionId;
+                patient.ConnectionId.Add(connectionId);
             }
             return JsonSerializer.Serialize(patient);
         }
@@ -73,7 +81,7 @@ namespace eWartezimmer
             => guid != null ? _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => patient.Guid.Equals(guid)) : null;
 
         internal Patient? GetPatientByConnectionId(string connectionId) 
-            => _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => connectionId.Equals(patient.ConnectionId));
+            => _offices.SelectMany(o => o.Queue).SingleOrDefault(patient => connectionId.Equals(patient.ConnectionId.Any()));
 
         internal Office? GetOfficeByGuid(string? guid)
             => guid != null ? _offices.SingleOrDefault(office => office.Guid.Equals(guid)) : null;
@@ -222,9 +230,16 @@ namespace eWartezimmer
                 office.ConnectionId = connectionId;
             var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => guid.Equals(p.Guid));
             if (patient != null)
-                patient.ConnectionId = connectionId;
+            {
+                if (patient.ConnectionId == null)
+                {
+                    patient.ConnectionId = new List<string?>();
+                }
+                if (!patient.ConnectionId.Contains(connectionId))
+                {
+                    patient.ConnectionId.Add(connectionId);
+                }
+            }
         }
-
-
     }
 }
