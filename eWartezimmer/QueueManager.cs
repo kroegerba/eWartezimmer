@@ -39,10 +39,8 @@ namespace eWartezimmer
                     if (patient.TreatmentTimeElapsed == patient.TreatmentDuration) {
                         finishedPatient = patient;
                     }
-                    if (patient.ConnectionIds != null)
-                    {
-                        foreach (var connectionId in patient.ConnectionIds)
-                        {
+                    if (patient.ConnectionIds != null) {
+                        foreach (var connectionId in patient.ConnectionIds) {
                             _hubContext.Clients.Client(connectionId).SendAsync("Patient", JsonPatient(connectionId, office.Guid, patient.Guid));
                         }
                     }
@@ -51,8 +49,9 @@ namespace eWartezimmer
                 if (finishedPatient != null) {
                     RemoveQueuer(office, finishedPatient);
                 }
-                if (office.ConnectionId != null)
+                if (office.ConnectionId != null) {
                     _hubContext.Clients.Client(office.ConnectionId).SendAsync("AllQueuers", JsonListAllQueuers(office.Guid));
+                }
             });
             
             await _hubContext.Clients.All.SendAsync("AllOffices", JsonListAllOffices());
@@ -98,10 +97,8 @@ namespace eWartezimmer
             if (candidate != null)
             {
                 office.Queue.Remove(candidate);
-                foreach (var patient in office.Queue)
-                {
-                    if (patient.TurnInLine > candidate.TurnInLine)
-                    {
+                foreach (var patient in office.Queue) {
+                    if (patient.TurnInLine > candidate.TurnInLine) {
                         patient.TurnInLine--;
                         patient.WaitingTime -= candidate.TreatmentDuration - candidate.TreatmentTimeElapsed;
                     }
@@ -210,13 +207,12 @@ namespace eWartezimmer
         internal void Disconnect(string connectionId)
         {
             var office = _offices.SingleOrDefault(o => o.ConnectionId != null && o.ConnectionId.Equals(connectionId));
-            if (office != null)
-            {
+            if (office != null) {
                 office.ConnectionId = null;
             }
-            var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => p.ConnectionIds.Contains(connectionId));
-            if (patient != null)
-            {
+
+            var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => p.ConnectionIds.Contains(connectionId));            
+            if (patient != null) {
                 patient.ConnectionIds.Remove(connectionId);
             }
         }
@@ -227,10 +223,8 @@ namespace eWartezimmer
             if (office != null)
                 office.ConnectionId = connectionId;
             var patient = _offices.SelectMany(o => o.Queue).SingleOrDefault(p => guid.Equals(p.Guid));
-            if (patient != null)
-            {
-                if (!patient.ConnectionIds.Contains(connectionId))
-                {
+            if (patient != null) {
+                if (!patient.ConnectionIds.Contains(connectionId)) {
                     patient.ConnectionIds.Add(connectionId);
                 }
             }

@@ -7,9 +7,6 @@ document.getElementById("sendButton").disabled = true;
 
 var patient = null;
 
-
-
-
 // Set the initial value of the variable
 let guid = document.getElementById("guid").value;
 var latitude = document.getElementById("latitude").value;
@@ -31,8 +28,7 @@ var circle = L.circle([parseFloat(latitude),parseFloat(longitude)], {
 }).addTo(map);
 
 connection.on("ReceiveMessage", function (officeGuid, message) {
-    if (officeGuid === "self")
-    {
+    if (officeGuid === "self") {
         var messageContainerDiv = document.createElement("div");
         messageContainerDiv.classList.add("message-container");
         messageContainerDiv.classList.add("right");
@@ -62,7 +58,7 @@ connection.on("Patient", (jsonPatient) => {
     if (parsedPatient) {
         patient = parsedPatient;
         if (latitude.localeCompare(patient.Latitude) + longitude.localeCompare(patient.Longitude) == 0) {
-
+            // do nothing
         } else {
             latitude = patient.Latitude;
             longitude = patient.Longitude;

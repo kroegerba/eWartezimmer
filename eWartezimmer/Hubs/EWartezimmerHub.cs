@@ -31,9 +31,8 @@ namespace eWartezimmer.Hubs
             var patient = _queueManager.GetPatientByGuid(patientGuid);
             var office = _queueManager.GetOfficeByPatient(patient);
             if (office != null && patient != null && patient.ConnectionIds != null) {
-                foreach (var connectionId in patient.ConnectionIds)
-                {
-                await Clients.Client(connectionId).SendAsync("ReceiveMessage", office.Guid, message);
+                foreach (var connectionId in patient.ConnectionIds) {
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", office.Guid, message);
                 }
             }
         }
@@ -47,15 +46,13 @@ namespace eWartezimmer.Hubs
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             _queueManager.Disconnect(connectionId: Context.ConnectionId);
-            // _queueManager.UnregisterQueuer(Context.ConnectionId);
             await Task.CompletedTask;
         }
 
         public async Task CreatePatient(string guid, string name)
         {
             Office? office = _queueManager.GetOfficeByGuid(guid);
-            if (office != null)
-            {
+            if (office != null) {
                 Patient patient = _queueManager.CreatePatient(office: office, name: name);
             }
             await Task.CompletedTask;
@@ -100,6 +97,5 @@ namespace eWartezimmer.Hubs
         {
             await Clients.All.SendAsync("UserLocationUpdated", lat, lng);
         }
-
     }
 }

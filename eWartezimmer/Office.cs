@@ -10,6 +10,5 @@ namespace eWartezimmer
         public string? Link { get; internal set; }
         public List<Patient> Queue { get; } = [];
         public string? ConnectionId { get; internal set; }
-        //private readonly List<Patient> _queue = new();
     }
 }

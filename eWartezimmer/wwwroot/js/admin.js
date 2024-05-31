@@ -109,7 +109,6 @@ connection.on("AllOffices", (jsonListOfOffices) => {
                 // If labelElement is not found, log an error or handle accordingly
                 console.log("Label element with class 'longitudeInput' not found.");
             }
-
         }
     });
 });

@@ -126,8 +126,6 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             TreatmentTimeElapsedInput.setAttribute("readonly", true);
             div.appendChild(TreatmentTimeElapsedInput);
 
-
-
             // patient.TreatmentDuration
             const TreatmentDurationLabel = document.createElement("label");
             TreatmentDurationLabel.classList.add("treatmentDurationLabel");
@@ -237,9 +235,6 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                 existingDiv.remove();
             }
         });
-
-
-
     });
 });
 

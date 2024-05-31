@@ -19,13 +19,11 @@ var AdminKey = Environment.GetEnvironmentVariable("eWartezimmerAdminKey");
                                                           .Select(Convert.ToChar)
                                                           .ToDictionary(c => c, _ => (string?)null);
     
-    foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())
-    {
+    foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces()) {
         // Filter out loopback and other non-usable interfaces
         if (networkInterface.OperationalStatus == OperationalStatus.Up &&
             networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-            networkInterface.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
-        {
+            networkInterface.NetworkInterfaceType != NetworkInterfaceType.Tunnel) {
             // Get IP properties for the current interface
             IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
             
@@ -36,37 +34,29 @@ var AdminKey = Environment.GetEnvironmentVariable("eWartezimmerAdminKey");
                 .ToArray();
             
             // Assign IPv4 addresses to choices for list from A - Z
-            foreach (IPAddress address in ipv4Addresses)
-            {
+            foreach (IPAddress address in ipv4Addresses) {
                 addressBaseUrls[addressBaseUrls.FirstOrDefault(kv => kv.Value == null).Key] = address.ToString();
             }
         }
     }
     
-    if (addressBaseUrls.Values.Count(s => s != null) != 1)
-    {
-        foreach (var url in addressBaseUrls.Where(kv => kv.Value != null))
-        {
+    if (addressBaseUrls.Values.Count(s => s != null) != 1) {
+        foreach (var url in addressBaseUrls.Where(kv => kv.Value != null)) {
             Console.WriteLine(url.Key + " : " + url.Value);
         }
         Console.WriteLine("Wählen Sie eine Base Url: ");
         var inputLine = Console.ReadLine();
         var candidate = addressBaseUrls.Where(kv => kv.Key.ToString().Equals(inputLine));
-        if (candidate.Count() == 1)
-        {
+        if (candidate.Count() == 1) {
             addressBaseUrl = candidate.Single().Value;
-        }
-        else
-        {
+        } else {
             Console.WriteLine("never mind, picking default:");
         }
-        }
-        else
-        {
-            addressBaseUrl = addressBaseUrls.First(kv => kv.Value != null).Value;
-        }
-        addressBaseUrl = "https://" + addressBaseUrl + ":7016";
-        Console.WriteLine("Base URL: " + addressBaseUrl);
+    } else {
+        addressBaseUrl = addressBaseUrls.First(kv => kv.Value != null).Value;
+    }
+    addressBaseUrl = "https://" + addressBaseUrl + ":7016";
+    Console.WriteLine("Base URL: " + addressBaseUrl);
 }
 #endif
 
@@ -98,8 +88,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<EWartezimmerHub>("/eWartezimmerHub");
-
-
-
 
 app.Run();
