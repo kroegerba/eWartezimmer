@@ -28,9 +28,9 @@ function formatTime(seconds) {
     return formattedHours + ":" + formattedMinutes + ":" + formattedSeconds;
 }
 
-function moveDown(element){
+function moveDown(element) {
     var lowerSibling = element.nextElementSibling;
-    if(lowerSibling === null) return;
+    if (lowerSibling === null) return;
     lowerSibling.insertAdjacentElement("afterend", element);
     var elemChat = element.querySelector(".chat-window");
     elemChat.scrollTop = elemChat.scrollHeight;
@@ -74,7 +74,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             QrCodeButton.classList.add("btn");
             QrCodeButton.classList.add("btn-primary");
             QrCodeButton.innerHTML = "QR-Code anzeigen";
-            QrCodeButton.addEventListener("click", function() {
+            QrCodeButton.addEventListener("click", function () {
                 window.open("/Home/QrCode/" + patient.Guid);
             });
 
@@ -83,7 +83,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             AheadButton.classList.add("btn-primary");
             AheadButton.classList.add("ahead");
             AheadButton.innerHTML = "jemanden vorlassen";
-            AheadButton.addEventListener("click", function() {
+            AheadButton.addEventListener("click", function () {
                 connection.invoke("LetSomeoneGoAhead", patient.Guid)
                     .catch(function (err) {
                         return console.error(err.toString());
@@ -108,7 +108,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             NameInput.setAttribute("type", "text");
             NameInput.setAttribute("name", "Name");
             NameInput.setAttribute("value", patient.Name);
-            NameInput.addEventListener("change", function(event) {
+            NameInput.addEventListener("change", function (event) {
                 connection.invoke("ChangeName", patient.Guid, event.target.value)
                     .catch(function (err) {
                         return console.error(err.toString());
@@ -150,7 +150,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             treatmentTimeElapsedContainer.classList.add("inline-container");
             treatmentTimeElapsedContainer.appendChild(TreatmentTimeElapsedInput);
             treatmentTimeElapsedContainer.appendChild(TreatmentTimeElapsedLabel);
-                        left.appendChild(treatmentTimeElapsedContainer);
+            left.appendChild(treatmentTimeElapsedContainer);
 
             // patient.TreatmentDuration
             const TreatmentDurationLabel = document.createElement("label");
@@ -163,8 +163,8 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             TreatmentDurationInput.setAttribute("name", "TreatmentDuration");
             TreatmentDurationInput.setAttribute("value", formatTime(patient.TreatmentDuration));
             TreatmentTimeElapsedInput.setAttribute("readonly", true);
-            
-            TreatmentDurationInput.addEventListener("click", function(event) {
+
+            TreatmentDurationInput.addEventListener("click", function (event) {
                 var duration = prompt("Bitte geben Sie die neue Behandlungsdauer des Patienten ein (in Minuten):");
                 if (duration) {
                     connection.invoke("ChangeTreatmentDuration", patient.Guid, duration)
@@ -196,12 +196,12 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             MessageInput.setAttribute("type", "text");
             MessageInput.setAttribute("name", "Message");
             MessageInput.placeholder = "Nachricht an den Patienten";
-            MessageInput.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
+            MessageInput.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter' && MessageInput.value !== "") {
                     connection.invoke("SendMessageToPatient", patient.Guid, MessageInput.value)
-                    .catch(function (err) {
-                        return console.error(err.toString());
-                    });
+                        .catch(function (err) {
+                            return console.error(err.toString());
+                        });
                     const element = document.getElementById(patient.Guid);
                     if (element) {
                         var chatWindow = element.querySelector(".chat-window");
@@ -225,7 +225,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             SendMessageButton.classList.add("btn");
             SendMessageButton.classList.add("btn-primary");
             SendMessageButton.innerHTML = "senden";
-            SendMessageButton.addEventListener("click", function() {
+            SendMessageButton.addEventListener("click", function () {
                 connection.invoke("SendMessageToPatient", patient.Guid, MessageInput.value)
                     .catch(function (err) {
                         return console.error(err.toString());

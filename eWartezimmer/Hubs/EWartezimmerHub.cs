@@ -10,7 +10,7 @@ namespace eWartezimmer.Hubs
         {
             var patient = _queueManager.GetPatientByConnectionId(Context.ConnectionId);
             var office = _queueManager.GetOfficeByPatient(patient);
-            if (patient != null && office != null && office.ConnectionId != null) {
+            if (patient != null && office != null && office.ConnectionId != null && !string.IsNullOrEmpty(message)) {
                 await Clients.Client(office.ConnectionId).SendAsync("ReceiveMessage", patient.Guid, message);
                 foreach (var connectionId in patient.ConnectionIds) {
                     await Clients.Client(connectionId).SendAsync("ReceiveMessage", "self", message);
@@ -24,7 +24,7 @@ namespace eWartezimmer.Hubs
         {
             var patient = _queueManager.GetPatientByGuid(patientGuid);
             var office = _queueManager.GetOfficeByPatient(patient);
-            if (office != null && patient != null && patient.ConnectionIds != null) {
+            if (office != null && patient != null && patient.ConnectionIds != null && !string.IsNullOrEmpty(message)) {
                 foreach (var connectionId in patient.ConnectionIds) {
                     await Clients.Client(connectionId).SendAsync("ReceiveMessage", office.Guid, message);
                 }
