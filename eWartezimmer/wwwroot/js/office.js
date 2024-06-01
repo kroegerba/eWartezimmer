@@ -58,10 +58,13 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             }
             div.id = patient.Guid;
 
+            const left = document.createElement("div");
+            left.classList.add("info-container");
+            div.appendChild(left);
+
             const TurnInLineLabel = document.createElement("label");
             TurnInLineLabel.textContent = patient.TurnInLine;
             TurnInLineLabel.classList.add("turnnumber");
-            div.appendChild(TurnInLineLabel);
 
             const QrCodeButton = document.createElement("button");
             QrCodeButton.classList.add("btn");
@@ -70,11 +73,11 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             QrCodeButton.addEventListener("click", function() {
                 window.open("/Home/QrCode/" + patient.Guid);
             });
-            div.appendChild(QrCodeButton);
 
             const AheadButton = document.createElement("button");
             AheadButton.classList.add("btn");
             AheadButton.classList.add("btn-primary");
+            AheadButton.classList.add("ahead");
             AheadButton.innerHTML = "ahead";
             AheadButton.addEventListener("click", function() {
                 connection.invoke("LetSomeoneGoAhead", patient.Guid)
@@ -83,7 +86,18 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                     });
                 moveDown(div);
             });
-            div.appendChild(AheadButton);
+
+            // Create a container for the inline elements
+            const topContainer = document.createElement("div");
+            topContainer.classList.add("inline-container");
+
+            // Append the elements to the container
+            topContainer.appendChild(TurnInLineLabel);
+            topContainer.appendChild(QrCodeButton);
+            topContainer.appendChild(AheadButton);
+
+            // Append the container to the left div
+            left.appendChild(topContainer);
 
             const NameInput = document.createElement("input");
             NameInput.classList.add("nameInput");
@@ -96,13 +110,12 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                         return console.error(err.toString());
                     });
             });
-            div.appendChild(NameInput);
+            left.appendChild(NameInput);
 
             // WaitingTime
             const WaitingTimeLabel = document.createElement("label");
             WaitingTimeLabel.textContent = "Wartezeit";
             WaitingTimeLabel.classList.add("waitingTimeLabel");
-            div.appendChild(WaitingTimeLabel);
 
             const WaitingTimeInput = document.createElement("input");
             WaitingTimeInput.setAttribute("type", "text");
@@ -110,13 +123,17 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             WaitingTimeInput.setAttribute("name", "WaitingTime");
             WaitingTimeInput.setAttribute("value", patient.WaitingTime);
             WaitingTimeInput.setAttribute("readonly", true);
-            div.appendChild(WaitingTimeInput);
+
+            const waitingTimeContainer = document.createElement("div");
+            waitingTimeContainer.classList.add("inline-container");
+            waitingTimeContainer.appendChild(WaitingTimeInput);
+            waitingTimeContainer.appendChild(WaitingTimeLabel);
+            left.appendChild(waitingTimeContainer);
 
             // patient.TreatmentTimeElapsed
             const TreatmentTimeElapsedLabel = document.createElement("label");
             TreatmentTimeElapsedLabel.classList.add("treatmentTimeElapsedLabel");
             TreatmentTimeElapsedLabel.textContent = "Behandlungszeit";
-            div.appendChild(TreatmentTimeElapsedLabel);
 
             const TreatmentTimeElapsedInput = document.createElement("input");
             TreatmentTimeElapsedInput.setAttribute("type", "text");
@@ -124,13 +141,17 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             TreatmentTimeElapsedInput.setAttribute("name", "TreatmentTimeElapsed");
             TreatmentTimeElapsedInput.setAttribute("value", formatTime(patient.TreatmentTimeElapsed));
             TreatmentTimeElapsedInput.setAttribute("readonly", true);
-            div.appendChild(TreatmentTimeElapsedInput);
+
+            const treatmentTimeElapsedContainer = document.createElement("div");
+            treatmentTimeElapsedContainer.classList.add("inline-container");
+            treatmentTimeElapsedContainer.appendChild(TreatmentTimeElapsedInput);
+            treatmentTimeElapsedContainer.appendChild(TreatmentTimeElapsedLabel);
+                        left.appendChild(treatmentTimeElapsedContainer);
 
             // patient.TreatmentDuration
             const TreatmentDurationLabel = document.createElement("label");
             TreatmentDurationLabel.classList.add("treatmentDurationLabel");
             TreatmentDurationLabel.textContent = "Behandlungsdauer";
-            div.appendChild(TreatmentDurationLabel);
 
             const TreatmentDurationInput = document.createElement("input");
             TreatmentDurationInput.setAttribute("type", "text");
@@ -148,7 +169,24 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                         });
                 }
             });
-            div.appendChild(TreatmentDurationInput);
+
+            const treatmentDurationContainer = document.createElement("div");
+            treatmentDurationContainer.classList.add("inline-container");
+            treatmentDurationContainer.appendChild(TreatmentDurationInput);
+            treatmentDurationContainer.appendChild(TreatmentDurationLabel);
+            left.appendChild(treatmentDurationContainer);
+
+            const right = document.createElement("div");
+            right.classList.add("chat-container");
+            div.appendChild(right);
+
+            const chatWindow = document.createElement("div");
+            chatWindow.classList.add("chat-window");
+            right.appendChild(chatWindow);
+
+            const chatInputArea = document.createElement("div");
+            chatInputArea.classList.add("chat-input-area");
+            right.appendChild(chatInputArea);
 
             const MessageInput = document.createElement("input");
             MessageInput.setAttribute("type", "text");
@@ -161,15 +199,19 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                     });
                     const element = document.getElementById(patient.Guid);
                     if (element) {
-                        console.log("has patient Guid div: " + patient.Guid);
-                        var messageList = element.querySelector(".messageList");
-                        var li = document.createElement("li");
-                        li.textContent = `Office says ${MessageInput.value}`;
-                        messageList.appendChild(li);
+                        var chatWindow = element.querySelector(".chat-window");
+                        var messageContainerDiv = document.createElement("div");
+                        messageContainerDiv.classList.add("message-container");
+                        messageContainerDiv.classList.add("right");
+                        var messageDiv = document.createElement("div");
+                        messageDiv.classList.add("message");
+                        messageDiv.textContent = MessageInput.value;
+                        messageContainerDiv.appendChild(messageDiv);
+                        chatWindow.appendChild(messageContainerDiv);
                     }
                 }
             });
-            div.appendChild(MessageInput);
+            chatInputArea.appendChild(MessageInput);
 
             const SendMessageButton = document.createElement("button");
             SendMessageButton.classList.add("btn");
@@ -182,18 +224,18 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                     });
                 const element = document.getElementById(patient.Guid);
                 if (element) {
-                    console.log("has patient Guid div: " + patient.Guid);
-                    var messageList = element.querySelector(".messageList");
-                    var li = document.createElement("li");
-                    li.textContent = `Office says ${MessageInput.value}`;
-                    messageList.appendChild(li);
+                    var chatWindow = element.querySelector(".chat-window");
+                    var messageContainerDiv = document.createElement("div");
+                    messageContainerDiv.classList.add("message-container");
+                    messageContainerDiv.classList.add("right");
+                    var messageDiv = document.createElement("div");
+                    messageDiv.classList.add("message");
+                    messageDiv.textContent = MessageInput.value;
+                    messageContainerDiv.appendChild(messageDiv);
+                    chatWindow.appendChild(messageContainerDiv);
                 }
             });
-            div.appendChild(SendMessageButton);
-
-            const MessageList = document.createElement("ul");
-            MessageList.classList.add("messageList");
-            div.appendChild(MessageList);
+            chatInputArea.appendChild(SendMessageButton);
 
             // add div to container
             container.appendChild(div);
@@ -201,8 +243,18 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             // element already existing, only update where changed
             if (patient.TurnInLine === 0) {
                 element.classList.add("inTreatment");
+                element.querySelector(".waitingTimeInput").style.display = "none";
+                element.querySelector(".waitingTimeLabel").style.display = "none";
+                element.querySelector(".treatmentTimeElapsedInput").style.display = "inline-block";
+                element.querySelector(".treatmentTimeElapsedLabel").style.display = "inline-block";
+                element.querySelector(".ahead").disabled = true;
             } else {
                 element.classList.remove("inTreatment");
+                element.querySelector(".waitingTimeInput").style.display = "inline-block";
+                element.querySelector(".waitingTimeLabel").style.display = "inline-block";
+                element.querySelector(".treatmentTimeElapsedInput").style.display = "none";
+                element.querySelector(".treatmentTimeElapsedLabel").style.display = "none";
+                element.querySelector(".ahead").disabled = false;
             }
             var labelElement = element.querySelector(".turnnumber");
             if (labelElement) {
@@ -242,11 +294,15 @@ connection.on("ReceiveMessage", function (patientGuid, message) {
     console.log("ReceivedMessage" + message + " by " + patientGuid);
     const element = document.getElementById(patientGuid);
     if (element) {
-        console.log("has patientGuid div: " + patientGuid);
-        var messageList = element.querySelector(".messageList");
-        var li = document.createElement("li");
-        li.textContent = `Patient says ${message}`;
-        messageList.appendChild(li);
+        var chatWindow = element.querySelector(".chat-window");
+        var messageContainerDiv = document.createElement("div");
+        messageContainerDiv.classList.add("message-container");
+        messageContainerDiv.classList.add("left");
+        var messageDiv = document.createElement("div");
+        messageDiv.classList.add("message");
+        messageDiv.textContent = message;
+        messageContainerDiv.appendChild(messageDiv);
+        chatWindow.appendChild(messageContainerDiv);
     }
 });
 
