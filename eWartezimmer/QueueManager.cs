@@ -27,7 +27,7 @@ namespace eWartezimmer
 
         internal async Task UpdateTickAsync()
         {
-            var finishedPatient = (Patient?) null;
+            List<Patient> finishedPatients = [];
             _offices.ForEach(office =>
             {
                 office.Queue.ForEach(patient =>
@@ -37,7 +37,7 @@ namespace eWartezimmer
                         patient.TreatmentTimeElapsed + 1 :
                         0;
                     if (patient.TreatmentTimeElapsed == patient.TreatmentDuration) {
-                        finishedPatient = patient;
+                        finishedPatients.Add(patient);
                     }
                     if (patient.ConnectionIds != null) {
                         foreach (var connectionId in patient.ConnectionIds) {
@@ -45,9 +45,8 @@ namespace eWartezimmer
                         }
                     }
                 });
-
-                if (finishedPatient != null) {
-                    RemoveQueuer(office, finishedPatient);
+                foreach(var patient in finishedPatients) {
+                    RemoveQueuer(office, patient);
                 }
                 if (office.ConnectionId != null) {
                     _hubContext.Clients.Client(office.ConnectionId).SendAsync("AllQueuers", JsonListAllQueuers(office.Guid));
