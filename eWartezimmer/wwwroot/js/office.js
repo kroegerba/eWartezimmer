@@ -73,7 +73,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             const QrCodeButton = document.createElement("button");
             QrCodeButton.classList.add("btn");
             QrCodeButton.classList.add("btn-primary");
-            QrCodeButton.innerHTML = "QR";
+            QrCodeButton.innerHTML = "QR-Code anzeigen";
             QrCodeButton.addEventListener("click", function() {
                 window.open("/Home/QrCode/" + patient.Guid);
             });
@@ -82,7 +82,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             AheadButton.classList.add("btn");
             AheadButton.classList.add("btn-primary");
             AheadButton.classList.add("ahead");
-            AheadButton.innerHTML = "ahead";
+            AheadButton.innerHTML = "jemanden vorlassen";
             AheadButton.addEventListener("click", function() {
                 connection.invoke("LetSomeoneGoAhead", patient.Guid)
                     .catch(function (err) {
