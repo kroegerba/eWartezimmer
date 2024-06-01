@@ -232,18 +232,20 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                     });
                 const element = document.getElementById(patient.Guid);
                 if (element) {
-                    var chatWindow = element.querySelector(".chat-window");
-                    var messageContainerDiv = document.createElement("div");
-                    messageContainerDiv.classList.add("message-container");
-                    messageContainerDiv.classList.add("right");
-                    var messageDiv = document.createElement("div");
-                    messageDiv.classList.add("message");
-                    messageDiv.textContent = MessageInput.value;
-                    MessageInput.value = "";
-                    messageContainerDiv.appendChild(messageDiv);
-                    chatWindow.appendChild(messageContainerDiv);
-                    // Scroll to the bottom of the chat window
-                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                    if (MessageInput.value !== "") {
+                        var chatWindow = element.querySelector(".chat-window");
+                        var messageContainerDiv = document.createElement("div");
+                        messageContainerDiv.classList.add("message-container");
+                        messageContainerDiv.classList.add("right");
+                        var messageDiv = document.createElement("div");
+                        messageDiv.classList.add("message");
+                        messageDiv.textContent = MessageInput.value;
+                        MessageInput.value = "";
+                        messageContainerDiv.appendChild(messageDiv);
+                        chatWindow.appendChild(messageContainerDiv);
+                        // Scroll to the bottom of the chat window
+                        chatWindow.scrollTop = chatWindow.scrollHeight;
+                    }
                 }
             });
             chatInputArea.appendChild(SendMessageButton);
