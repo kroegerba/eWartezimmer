@@ -195,6 +195,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             const MessageInput = document.createElement("input");
             MessageInput.setAttribute("type", "text");
             MessageInput.setAttribute("name", "Message");
+            MessageInput.placeholder = "Nachricht an den Patienten";
             MessageInput.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter') {
                     connection.invoke("SendMessageToPatient", patient.Guid, MessageInput.value)
@@ -223,7 +224,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
             const SendMessageButton = document.createElement("button");
             SendMessageButton.classList.add("btn");
             SendMessageButton.classList.add("btn-primary");
-            SendMessageButton.innerHTML = "send";
+            SendMessageButton.innerHTML = "senden";
             SendMessageButton.addEventListener("click", function() {
                 connection.invoke("SendMessageToPatient", patient.Guid, MessageInput.value)
                     .catch(function (err) {
