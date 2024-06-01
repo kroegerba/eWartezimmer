@@ -32,6 +32,10 @@ function moveDown(element){
     var lowerSibling = element.nextElementSibling;
     if(lowerSibling === null) return;
     lowerSibling.insertAdjacentElement("afterend", element);
+    var elemChat = element.querySelector(".chat-window");
+    elemChat.scrollTop = elemChat.scrollHeight;
+    var siblChat = lowerSibling.querySelector(".chat-window");
+    siblChat.scrollTop = siblChat.scrollHeight;
 }
 
 connection.on("AllQueuers", (jsonListOfQueuers) => {
@@ -208,6 +212,8 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                         messageDiv.textContent = MessageInput.value;
                         messageContainerDiv.appendChild(messageDiv);
                         chatWindow.appendChild(messageContainerDiv);
+                        // Scroll to the bottom of the chat window
+                        chatWindow.scrollTop = chatWindow.scrollHeight;
                     }
                 }
             });
@@ -233,6 +239,8 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                     messageDiv.textContent = MessageInput.value;
                     messageContainerDiv.appendChild(messageDiv);
                     chatWindow.appendChild(messageContainerDiv);
+                    // Scroll to the bottom of the chat window
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
                 }
             });
             chatInputArea.appendChild(SendMessageButton);
@@ -303,6 +311,7 @@ connection.on("ReceiveMessage", function (patientGuid, message) {
         messageDiv.textContent = message;
         messageContainerDiv.appendChild(messageDiv);
         chatWindow.appendChild(messageContainerDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 });
 
