@@ -210,6 +210,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                         var messageDiv = document.createElement("div");
                         messageDiv.classList.add("message");
                         messageDiv.textContent = MessageInput.value;
+                        MessageInput.value = "";
                         messageContainerDiv.appendChild(messageDiv);
                         chatWindow.appendChild(messageContainerDiv);
                         // Scroll to the bottom of the chat window
@@ -237,6 +238,7 @@ connection.on("AllQueuers", (jsonListOfQueuers) => {
                     var messageDiv = document.createElement("div");
                     messageDiv.classList.add("message");
                     messageDiv.textContent = MessageInput.value;
+                    MessageInput.value = "";
                     messageContainerDiv.appendChild(messageDiv);
                     chatWindow.appendChild(messageContainerDiv);
                     // Scroll to the bottom of the chat window
