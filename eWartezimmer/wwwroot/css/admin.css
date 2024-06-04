@@ -1,0 +1,88 @@
+#sendButton {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    width: 200px; /* Add this line to set a fixed width for the button */
+}
+
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 0;
+background-color: #f0f0f0;
+}
+
+.office {
+    padding: 1rem;
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 2rem;
+}
+
+.sidebar {
+background-color: #333;
+color: #fff;
+padding: 1rem;
+width: 250px;
+height: 100vh;
+position: fixed;
+top: 0;
+left: 0;
+}
+
+.sidebar ul {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+.sidebar li {
+padding: 1rem;
+border-bottom: 1px solid #444;
+}
+
+.sidebar li:hover {
+background-color: #444;
+}
+
+.sidebar a {
+color: #fff;
+text-decoration: none;
+}
+
+.main-content {
+margin-left: 250px;
+padding: 2rem;
+}
+
+#sendButton {
+background-color: #007bff;
+color: #fff;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 0.25rem;
+cursor: pointer;
+margin-top: 1rem;
+}
+
+#container {
+border: 1px solid #ccc;
+padding: 1rem;
+margin-top: 1rem;
+background-color: #fff;
+}
+
+.logo {
+width: 100px;
+height: 100px;
+margin: 0 auto;
+display: block;
+margin-top: 2rem;
+}
