@@ -20,12 +20,6 @@ background-color: #f0f0f0;
     padding: 1rem;
 }
 
-.container {
-max-width: 1200px;
-margin: 0 auto;
-padding: 2rem;
-}
-
 .sidebar {
 background-color: #333;
 color: #fff;
@@ -38,23 +32,23 @@ left: 0;
 }
 
 .sidebar ul {
-list-style: none;
-padding: 0;
-margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .sidebar li {
-padding: 1rem;
-border-bottom: 1px solid #444;
+    padding: 1rem;
+    border-bottom: 1px solid #444;
 }
 
 .sidebar li:hover {
-background-color: #444;
+    background-color: #444;
 }
 
 .sidebar a {
-color: #fff;
-text-decoration: none;
+    color: #fff;
+    text-decoration: none;
 }
 
 .main-content {
@@ -62,21 +56,11 @@ margin-left: 250px;
 padding: 2rem;
 }
 
-#sendButton {
-background-color: #007bff;
-color: #fff;
-border: none;
-padding: 0.5rem 1rem;
-border-radius: 0.25rem;
-cursor: pointer;
-margin-top: 1rem;
-}
-
 #container {
-border: 1px solid #ccc;
-padding: 1rem;
-margin-top: 1rem;
-background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: #fff;
 }
 
 .logo {

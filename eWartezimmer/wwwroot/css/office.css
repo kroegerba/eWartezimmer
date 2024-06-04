@@ -1,75 +1,39 @@
 .patient {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5;;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: 1px solid #ccc;
+  border-radius: 5px;
   display: flex;
   align-items: stretch;
   justify-content: space-between;
-  padding: 10px;
+  padding: 15px;
   margin-bottom: 10px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.patient:hover {
+  /* Darken the background color slightly on hover */
+  background-color: #eaeaea;
 }
 
 .inTreatment {
-  background-color: rosybrown;
+  background-color: #f5e3e3;
 }
 
-.turnnumber {
-  font-size: 28px;
-  margin: 8px;
-}
-
+.turnnumber,
 .nameInput {
   font-size: 28px;
   margin: 8px
 }
 
-.waitingTimeInput {
-  font-size: 18px;
-  margin: 8px;
-}
-
-.treatmentTimeElapsedInput {
-  font-size: 18px;
-  margin: 8px;
-}
-
-.treatmentDurationInput {
-  font-size: 18px;
-  margin: 8px;
-}
-
-.treatmentTimeElapsedLabel {
-  font-size: 18px;
-  margin: 8px;
-}
-
-.treatmentDurationLabel {
-  font-size: 18px;
-  margin: 8px;
-}
-
+.waitingTimeInput,
+.treatmentTimeElapsedInput,
+.treatmentDurationInput,
+.treatmentTimeElapsedLabel,
+.treatmentDurationLabel
 .waitingTimeLabel {
   font-size: 18px;
   margin: 8px;
-}
-
-.patient.inTreatment>.someOtherLabel {
-  display: none;
-}
-
-.inTreatment.patient>.inline-container>.waitingTimeLabel {
-  display: none;
-}
-
-.inTreatment.patient>.inline-container>.waitingTimeInput {
-  display: none;
-}
-
-:not(.inTreatment).patient>.treatmentTimeElapsedLabel {
-  display: none;
-}
-
-:not(.inTreatment).patient>.treatmentTimeElapsedInput {
-  display: none;
 }
 
 .inline-container {
@@ -174,4 +138,59 @@
 
 .chat-input-area button:hover {
   background-color: #0056b3;
+}
+
+.sidebar {
+  background-color: #333;
+  color: #fff;
+  padding: 1rem;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.sidebar li:hover {
+  background-color: #444;
+}
+
+.sidebar a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 2rem;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  display: block;
+  margin-top: 2rem;
+}
+
+#sendButton {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  width: 200px;
 }

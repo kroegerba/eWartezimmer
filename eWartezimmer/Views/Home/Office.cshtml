@@ -6,10 +6,20 @@
 @if (Model?.Office != null)
 {
     <link rel="stylesheet" href="~/css/office.css" asp-append-version="true" />
-    <input type="hidden" id="guid" value="@Model?.Office!.Guid" />
-    <p>Praxis @Model!.Office.Name (@Model!.Office.Address - @Model!.Office.Latitude, @Model!.Office.Longitude)</p>
-    <input type="button" id="sendButton" value="Patient anlegen" />
-    <div id="container"></div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <div class="sidebar">
+        <img src="~/assets/logo.png" alt="Logo" class="logo">
+        <ul>
+            <!-- <li><a href="#">Dashboard</a></li> -->
+            <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/kroegerba/eWartezimmer/wiki/Praxis">Info</a></li>
+            <input type="button" id="sendButton" value="Patient anlegen" />
+        </ul>
+    </div>
+    <div class="main-content">
+        <input type="hidden" id="guid" value="@Model?.Office!.Guid" />
+        <p>Praxis @Model!.Office.Name (@Model!.Office.Address - @Model!.Office.Latitude, @Model!.Office.Longitude)</p>
+        <div id="container"></div>
+    </div>
     <script src="~/js/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     <script src="~/js/office.js"></script>
 }
