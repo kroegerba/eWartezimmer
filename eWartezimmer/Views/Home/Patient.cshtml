@@ -1,0 +1,30 @@
+@model PatientViewModel
+@{
+    ViewData["Title"] = "Patient";
+}
+<link rel="stylesheet" href="~/css/patient.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/leaflet.css" asp-append-version="true" />
+<input type="hidden" id="guid" value="@Model?.Patient?.Guid" />
+<input type="hidden" id="latitude" value="@Model?.Patient?.Latitude" />
+<input type="hidden" id="longitude" value="@Model?.Patient?.Longitude" />
+
+<div id="top-panel">
+    <div id="map"></div>
+</div>
+<div id="bottom-panel">
+    <div id="greeting"></div>
+    <div id="countdown"></div>    
+    <div class="chat-container">
+        <div class="chat-window" id="chatWindow">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Nachricht an die Praxis">
+            <button id="sendButton">senden</button>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/leaflet/leaflet.js" asp-append-version="true"></script>
+<script src="~/js/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+<script src="~/js/patient.js" asp-append-version="true"></script>

@@ -1,0 +1,12 @@
+@model AdminViewModel
+@{
+    ViewData["Title"] = "Admin";
+}
+@if (Model.IsAdmin)
+{
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <input type="button" id="sendButton" value="Praxis anlegen" />
+    <div id="container"></div>
+    <script src="~/js/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script src="~/js/admin.js"></script>
+}

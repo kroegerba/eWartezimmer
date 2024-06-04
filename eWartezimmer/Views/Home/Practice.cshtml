@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Practice";
+}
+<div class="inputContainer">
+    <label for="firstName">Vorname:</label>
+    <input type="text" id="firstName"><br>
+
+    <label for="lastName">Nachname:</label>
+    <input type="text" id="lastName"><br>
+
+    <label for="patientNumber">Patientennummer:</label>
+    <input type="text" id="patientNumber"><br>
+
+    <label for="gender">Geschlecht:</label>
+    <select id="gender">
+        <option value="m">m</option>
+        <option value="w">w</option>
+        <option value="d">d</option>
+    </select>
+
+    <label for="complaint">Beschwerde:</label>
+    <input type="text" id="complaint"><br>
+    
+</div>
+
+<button onclick="showInput()">Eingaben anzeigen</button><br>
+
+<div id="output"></div>

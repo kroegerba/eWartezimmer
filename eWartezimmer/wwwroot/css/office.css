@@ -1,0 +1,177 @@
+.patient {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.inTreatment {
+  background-color: rosybrown;
+}
+
+.turnnumber {
+  font-size: 28px;
+  margin: 8px;
+}
+
+.nameInput {
+  font-size: 28px;
+  margin: 8px
+}
+
+.waitingTimeInput {
+  font-size: 18px;
+  margin: 8px;
+}
+
+.treatmentTimeElapsedInput {
+  font-size: 18px;
+  margin: 8px;
+}
+
+.treatmentDurationInput {
+  font-size: 18px;
+  margin: 8px;
+}
+
+.treatmentTimeElapsedLabel {
+  font-size: 18px;
+  margin: 8px;
+}
+
+.treatmentDurationLabel {
+  font-size: 18px;
+  margin: 8px;
+}
+
+.waitingTimeLabel {
+  font-size: 18px;
+  margin: 8px;
+}
+
+.patient.inTreatment>.someOtherLabel {
+  display: none;
+}
+
+.inTreatment.patient>.inline-container>.waitingTimeLabel {
+  display: none;
+}
+
+.inTreatment.patient>.inline-container>.waitingTimeInput {
+  display: none;
+}
+
+:not(.inTreatment).patient>.treatmentTimeElapsedLabel {
+  display: none;
+}
+
+:not(.inTreatment).patient>.treatmentTimeElapsedInput {
+  display: none;
+}
+
+.inline-container {
+  display: flex;
+  align-items: center;
+  /* Vertical alignment */
+  justify-content: flex-start;
+  gap: 10px;
+  /* Optional: adds space between elements */
+}
+
+.inline-container .btn {
+  margin-left: 10px;
+  /* Optional: adds space between buttons */
+}
+
+.info-container {
+  display: flex;
+  width: 45%;
+  flex-direction: column;
+  flex: 1;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.chat-container {
+  display: flex;
+  width: 45%;
+  height: 300px;
+  flex-direction: column;
+  flex: 1;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.chat-window {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  border-bottom: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.message-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.message {
+  max-width: 70%;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.message-container.left {
+  justify-content: flex-start;
+}
+
+.message-container.left .message {
+  background-color: #202c33;
+  /* Example background color */
+  color: white;
+}
+
+.message-container.right {
+  justify-content: flex-end;
+}
+
+.message-container.right .message {
+  background-color: #005c4b;
+  /* Example background color */
+  color: white;
+  text-align: right;
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.chat-input-area input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.chat-input-area button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.chat-input-area button:hover {
+  background-color: #0056b3;
+}
