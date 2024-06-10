@@ -6,7 +6,8 @@
 ![grafik](https://github.com/kroegerba/eWartezimmer/assets/166640275/9737338f-6642-4b6f-ac14-2b3b049998f5)
 	
 3.	Sie haben jederzeit einen Überblick über die Warteschlange
+
 ![grafik](https://github.com/kroegerba/eWartezimmer/assets/166640275/cb634317-b49b-47e1-9b65-5570131fe9e3)
 
-4.	Über den Chat stehen Sie mit Ihrem Patienten jederzeit in Kontakt und können ggf. Anpassungen der Wartezeit vornehmen
+5.	Über den Chat stehen Sie mit Ihrem Patienten jederzeit in Kontakt und können ggf. Anpassungen der Wartezeit vornehmen
 ![grafik](https://github.com/kroegerba/eWartezimmer/assets/166640275/1f0208ed-69b3-43ec-aa08-4ddc13c23617)
