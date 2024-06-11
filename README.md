@@ -1,7 +1,5 @@
 # eWartezimmer  
-Code-Doku: im Code 
-Anwenderdoku: [GitHub-Wiki](https://github.com/kroegerba/eWartezimmer/wiki)  
-
+Anwender- und Code-Doku: [GitHub-Wiki](https://github.com/kroegerba/eWartezimmer/wiki)  
 ## Quick Start Guide
 ### Requirements  
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)  
